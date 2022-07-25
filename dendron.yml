@@ -21,7 +21,7 @@ commands:
 workspace:
     vaults:
         -
-            fsPath: vault
+            fsPath: docs
     journal:
         dailyDomain: daily
         name: journal
