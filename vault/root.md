@@ -2,7 +2,7 @@
 id: suwrluips8edtxyldmv4far
 title: Root
 desc: ''
-updated: 1658779887567
+updated: 1658780200122
 created: 1658779887567
 ---
 # Welcome to Dendron
@@ -13,6 +13,7 @@ This is the root of your dendron vault. If you decide to publish your entire vau
 
 This section contains useful links to related resources.
 
+[upp](..\readme.2.md)
 - [Getting Started Guide](https://link.dendron.so/6b25)
 - [Discord](https://link.dendron.so/6b23)
 - [Home Page](https://wiki.dendron.so/)
