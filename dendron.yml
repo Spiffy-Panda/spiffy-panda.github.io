@@ -21,7 +21,7 @@ commands:
 workspace:
     vaults:
         -
-            fsPath: docs
+            fsPath: vault
     journal:
         dailyDomain: daily
         name: journal
@@ -89,6 +89,7 @@ publishing:
     siteHierarchies:
         - root
     writeStubs: false
+    siteUrl: https://spiffy-panda.github.io
     siteRootDir: docs
     seo:
         title: Dendron
