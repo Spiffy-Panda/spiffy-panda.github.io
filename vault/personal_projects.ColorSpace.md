@@ -1,14 +1,14 @@
 ---
 id: tbm99i5jn49hvav54u2rbbu
-title: ColorSpace
+title: Color Space
 desc: ''
-updated: 1658870103588
+updated: 1658956542863
 created: 1658868655081
 ---
 
 #### Core Skills:
 [[tags.lang.Python]][[tags.lang.C_sharp]][[tags.toolkit.notebooks]][[tags.engine.unity]]
-# Color Space
+
 ![Sample Gradient Shortpaths](/assets/photo_2022-07-05_20-32-09.jpg){width: 200px}
 ![Sample Gradient w/long paths](/assets/photo_2022-07-06_17-46-13.jpg){width: 215px}
 ## Abstract
