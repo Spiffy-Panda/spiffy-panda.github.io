@@ -2,7 +2,7 @@
 id: dwxnkggefceh0nl2qn5slq3
 title: Quite OK Image Format 
 desc: ''
-updated: 1658878039736
+updated: 1659990042803
 created: 1658868762247
 ---
 
@@ -30,8 +30,9 @@ I started with the encoder, and took it in stages, names starting with *qoi_ * a
 
 
 ## Results
-
-## Conclusion
+ - Successfully implemented the standard in unity. It can both read and write files. 
+## Next Steps
+ - I would like to write some tests and visualizers as a demo site.
 
 
 [^2]: https://qoiformat.org/qoi-specification.pdf
