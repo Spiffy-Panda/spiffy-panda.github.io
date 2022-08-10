@@ -2,7 +2,7 @@
 id: 0gmr4ome7gf2gzyyuq2f7xl
 title: Panda's Portfolio
 desc: ''
-updated: 1658966848261
+updated: 1660171481962
 created: 1658781951452
 ---
 
@@ -31,5 +31,10 @@ PNG the one of the most widely used lossless image compression. In order to comp
 
 I was interested in checking out this lossless image compression. In the passed I bit-banged out *BMP*s and studied *JPEG* in computation mathematics. I chose unity, thinking in the future it might be nice to use this in a larger project. 
 
+### Older Projects
 
+# [[personal_projects.VR_Minimap]] and [[personal_projects.AR_Minimap]]
+Full 3D minimap using a second camera, changing the Interpupillary distance (IPD) to "shrink" the world. Followed up by a project to make the construction viewable in AR.
 
+# [[personal_projects.scrolling_circle_world]]
+Exploring the workflow for a game that scrolls on a disk.
