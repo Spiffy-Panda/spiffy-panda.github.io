@@ -1,0 +1,45 @@
+<h1 id="quite-ok-image-format"><a aria-hidden="true" class="anchor-heading icon-link" href="#quite-ok-image-format"></a>Quite OK Image Format</h1>
+<h4 id="core-skills"><a aria-hidden="true" class="anchor-heading icon-link" href="#core-skills"></a>Core Skills:</h4>
+<p><a class="color-tag" style="--tag-color: lightskyblue;" href="/notes/tjvscashz9lswvmn2eoyx62">C#</a><a class="color-tag" style="--tag-color: #019529;" href="/notes/jv5kgrcax1tpx50stts307q">Unity</a></p>
+<h2 id="abstract"><a aria-hidden="true" class="anchor-heading icon-link" href="#abstract"></a>Abstract</h2>
+<p>Implementation of the Quite OK Image Format (QoI)<a id="fnref-1" class="fnref" href="#fn-1">1</a> a lossless image compression algorithm in <span class="math math-inline"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mi>n</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(n)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.02778em;">O</span><span class="mopen">(</span><span class="mord mathnormal">n</span><span class="mclose">)</span></span></span></span></span>.</p>
+<h2 id="goal"><a aria-hidden="true" class="anchor-heading icon-link" href="#goal"></a>Goal</h2>
+<p>Starting with just the specification<a id="fnref-2" class="fnref" href="#fn-2">2</a> (and an online decoder for validation), I wanted to implement the QoI format in C#, with unity as a visualizer. </p>
+<h2 id="approach"><a aria-hidden="true" class="anchor-heading icon-link" href="#approach"></a>Approach</h2>
+<p>I started with the encoder, and took it in stages, names starting with <em>qoi_ </em> are from the spec<a id="fnref-2" class="fnref" href="#fn-2">2</a> but implemented by me.</p>
+<ul>
+<li>implementation: minimal version
+<ul>
+<li><em>qoi_header</em> struct and a tailing 7 0x00 and one 0x01 bytes</li>
+<li><em>qoi_op_rgb</em> and <em>qoi_op_rgba</em> the literals and base case for the "chunks" to come</li>
+</ul>
+</li>
+<li>I checked that with an online decoder to see that the image came out as expected. </li>
+<li>implement the running array and <em>qoi_op_index</em> (see spec for details)</li>
+<li>As the rest of the chuck encodings are based on differentials and "runs", I made a quick image gradient generator. That way I could control how fast the values change, causing the different encodings to be favored. 
+<ul>
+<li><em>qoi_op_diff</em> for small changes</li>
+<li><em>qoi_op_luma</em> for larger changes</li>
+<li><em>qoi_op_run</em> for unbroken sequences of the previous pixel.</li>
+</ul>
+</li>
+</ul>
+<h2 id="results"><a aria-hidden="true" class="anchor-heading icon-link" href="#results"></a>Results</h2>
+<ul>
+<li>Successfully implemented the standard in unity. It can both read and write files. </li>
+</ul>
+<h2 id="next-steps"><a aria-hidden="true" class="anchor-heading icon-link" href="#next-steps"></a>Next Steps</h2>
+<ul>
+<li>I would like to write some tests and visualizers as a demo site.</li>
+</ul>
+<hr>
+<h2 id="footnotes"><a aria-hidden="true" class="anchor-heading icon-link" href="#footnotes"></a>Footnotes</h2>
+<ol>
+<li><span id="fn-1" style="width: 0; height: 0;"></span><p><a href="https://qoiformat.org/">https://qoiformat.org/</a><a class="fn" href="#fnref-1">˄</a></p></li>
+<li><span id="fn-2" style="width: 0; height: 0;"></span><p><a href="https://qoiformat.org/qoi-specification.pdf">https://qoiformat.org/qoi-specification.pdf</a><a class="fn" href="#fnref-2">˄</a></p></li>
+</ol>
+<hr>
+<strong>Backlinks</strong>
+<ul>
+<li><a href="/">Panda's Portfolio</a></li>
+</ul>

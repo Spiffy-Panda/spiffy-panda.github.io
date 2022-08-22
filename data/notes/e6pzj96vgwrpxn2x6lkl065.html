@@ -1,0 +1,11 @@
+<h1 id="vr_minimap"><a aria-hidden="true" class="anchor-heading icon-link" href="#vr_minimap"></a>VR_Minimap</h1>
+<p>Language: Unity3D using C#</p>
+<p>Goal: Full 3D minimap</p>
+<p>Approach: Uses a second camera, changing the Interpupillary distance (IPD) to shrink the world.</p>
+<p>Unity3D's stereo camera automatically places itself at the location of the HMD. The IPD scaling and location scaling is done using Unity3D's built transform. Next, I changed the settings of the Minimap camera. Turned off the buffer clears so they render using the same Z-buffer. Then scaled the second Z-buffer by changing the near and far clipping plan to match the scale.</p>
+<p>This works and shows up in world, while still being properly occluded. I then shift it based center of the map and location in world it.</p>
+<hr>
+<strong>Backlinks</strong>
+<ul>
+<li><a href="/">Panda's Portfolio</a></li>
+</ul>
