@@ -1,0 +1,12 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "quartz",
+      "runtimeExecutable": "C:\\Program Files\\Git\\bin\\bash.exe",
+      "runtimeArgs": ["-c", "export PATH=\"/c/Users/Brian/AppData/Roaming/nvm/v22.22.2:$PATH\" && node ./quartz/bootstrap-cli.mjs build --serve --port ${PORT:-9249} --wsPort 9250"],
+      "port": 9249,
+      "autoPort": true
+    }
+  ]
+}
