@@ -10,7 +10,7 @@ const config: QuartzConfig = {
     analytics: null,
     locale: "en-US",
     baseUrl: "spiffy-panda.github.io",
-    ignorePatterns: ["private", "templates", ".obsidian"],
+    ignorePatterns: ["private", "templates", ".obsidian", "In-Progress-Workspace"],
     defaultDateType: "modified",
     theme: {
       fontOrigin: "googleFonts",

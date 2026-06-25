@@ -2,6 +2,9 @@
 title: Panda's Portfolio
 ---
 
+> [!note] 🛠 Building with Agents
+> Short pitches on how I build software *with* AI agents — framed by how Claude was actually used. **[[builder-ideas/index|See the builder-ideas →]]**
+
 # [[personal_projects/IK|Inverse Kinematics]]
 #### Core Skills:
 [[tags/lang/C_sharp]] [[tags/engine/unity]] [[tags/robotics]] [[tags/3d_mathematics]]

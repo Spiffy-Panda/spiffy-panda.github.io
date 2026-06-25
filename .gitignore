@@ -11,3 +11,6 @@ build
 seeds
 .dendron.*
 .dendron.cache.*
+
+# Local-only in-progress workspace — never built into the site, never pushed to the public repo
+content/In-Progress-Workspace/
