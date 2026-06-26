@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<rss version="2.0">
+    <channel>
+      <title>Panda&#039;s Portfolio</title>
+      <link>https://spiffy-panda.github.io</link>
+      <description>Last 10 notes on Panda&#039;s Portfolio</description>
+      <generator>Quartz -- quartz.jzhao.xyz</generator>
+      <item>
+    <title>Building with Agents</title>
+    <link>https://spiffy-panda.github.io/builder-ideas/</link>
+    <guid>https://spiffy-panda.github.io/builder-ideas/</guid>
+    <description><![CDATA[ 🛠 Building with Agents Short pitches on projects I build with AI agents — each framed by how Claude was used (coder, orchestrator, data-cruncher, in-the-loop operator), not just what got built. ]]></description>
+    <pubDate>Fri, 26 Jun 2026 00:14:06 GMT</pubDate>
+  </item><item>
+    <title>AI-BT-Gym</title>
+    <link>https://spiffy-panda.github.io/builder-ideas/AI-BT-Gym-builder</link>
+    <guid>https://spiffy-panda.github.io/builder-ideas/AI-BT-Gym-builder</guid>
+    <description><![CDATA[ Abstract An evolutionary “gym” in Godot (C#) where LLM-written behavior trees fight in a 2D chain-fist game and improve across generations. ]]></description>
+    <pubDate>Thu, 25 Jun 2026 05:28:56 GMT</pubDate>
+  </item><item>
+    <title>DemonBluffAi-Redux</title>
+    <link>https://spiffy-panda.github.io/builder-ideas/DemonBluffAi-Redux-builder</link>
+    <guid>https://spiffy-panda.github.io/builder-ideas/DemonBluffAi-Redux-builder</guid>
+    <description><![CDATA[ Abstract A web-based course that teaches modern computer-vision practice by building one constrained system end to end: reading Demon Bluff game state from video frames alone and serving it over a REST API. ]]></description>
+    <pubDate>Thu, 25 Jun 2026 05:28:56 GMT</pubDate>
+  </item><item>
+    <title>OstranautDataExplorer</title>
+    <link>https://spiffy-panda.github.io/builder-ideas/OstranautDataExplorer-builder</link>
+    <guid>https://spiffy-panda.github.io/builder-ideas/OstranautDataExplorer-builder</guid>
+    <description><![CDATA[ Abstract An IDE-style “Find Usages” browser for the game Ostranauts’ data tree, where everything is a CondOwner referencing other objects by string name across ~70 folders with no foreign keys or tooling. ]]></description>
+    <pubDate>Thu, 25 Jun 2026 05:28:56 GMT</pubDate>
+  </item><item>
+    <title>ProductivityAndReadingHelper</title>
+    <link>https://spiffy-panda.github.io/builder-ideas/ProductivityAndReadingHelper-builder</link>
+    <guid>https://spiffy-panda.github.io/builder-ideas/ProductivityAndReadingHelper-builder</guid>
+    <description><![CDATA[ Abstract A local, no-cloud toolkit for studying dense academic papers: PDF → markdown working copy → skim-highlight overlay + two-voice podcast script → synthesized audio. ]]></description>
+    <pubDate>Thu, 25 Jun 2026 05:28:56 GMT</pubDate>
+  </item><item>
+    <title>SoundingChamber</title>
+    <link>https://spiffy-panda.github.io/builder-ideas/SoundingChamber-builder</link>
+    <guid>https://spiffy-panda.github.io/builder-ideas/SoundingChamber-builder</guid>
+    <description><![CDATA[ Abstract A puzzle game about prophecy lawyering via historical sound change — prophecies bind to sounds, so you apply real linguistic rules (e → i / _r) to drift a whole language until bear becomes beer. ]]></description>
+    <pubDate>Thu, 25 Jun 2026 05:28:56 GMT</pubDate>
+  </item><item>
+    <title>ai-verbal-coaching</title>
+    <link>https://spiffy-panda.github.io/builder-ideas/ai-verbal-coaching-builder</link>
+    <guid>https://spiffy-panda.github.io/builder-ideas/ai-verbal-coaching-builder</guid>
+    <description><![CDATA[ Abstract “Voice Coach” is a local, on-device tool for rehearsing PhD interview answers out loud. ]]></description>
+    <pubDate>Thu, 25 Jun 2026 05:28:56 GMT</pubDate>
+  </item><item>
+    <title>Panda&#039;s Portfolio</title>
+    <link>https://spiffy-panda.github.io/</link>
+    <guid>https://spiffy-panda.github.io/</guid>
+    <description><![CDATA[  🛠 Building with Agents Short pitches on how I build software with AI agents — framed by how Claude was actually used. ]]></description>
+    <pubDate>Thu, 25 Jun 2026 05:28:56 GMT</pubDate>
+  </item><item>
+    <title>AR Minimap</title>
+    <link>https://spiffy-panda.github.io/personal_projects/AR_Minimap</link>
+    <guid>https://spiffy-panda.github.io/personal_projects/AR_Minimap</guid>
+    <description><![CDATA[ Language: Unity3D using C# Goal: Allow second user to see the minimap using a AR phone. ]]></description>
+    <pubDate>Wed, 24 Jun 2026 22:32:38 GMT</pubDate>
+  </item><item>
+    <title>Color Space</title>
+    <link>https://spiffy-panda.github.io/personal_projects/ColorSpace</link>
+    <guid>https://spiffy-panda.github.io/personal_projects/ColorSpace</guid>
+    <description><![CDATA[ Core Skills: Python C_sharp notebooks unity Abstract Inspired by a post showing the different between a sRGB lerp vs HSV lerp. ]]></description>
+    <pubDate>Wed, 24 Jun 2026 22:32:38 GMT</pubDate>
+  </item>
+    </channel>
+  </rss>
