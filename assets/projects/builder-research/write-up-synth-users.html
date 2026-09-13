@@ -1,0 +1,426 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Synthetic users as a validated instrument &mdash; Builder-Research</title>
+<style>
+:root{
+  --purple:#4b2e83; --purple-deep:#32006e; --gold:#ffc700; --gold-muted:#b7a57a;
+  --ink:#241a3a; --ink-2:#5b5470; --rule:#e4e1ea; --bg:#faf9fb; --card:#ffffff;
+  --warn-bg:#fff8e1; --warn-br:#e6b800;
+}
+@media (prefers-color-scheme:dark){
+  :root{ --ink:#ece9f3; --ink-2:#a79fc0; --rule:#3a3350; --bg:#16121f; --card:#1e1930;
+         --purple:#b9a3e3; --warn-bg:#2c2413; --warn-br:#8a7020; }
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font:16px/1.62 -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif;
+  -webkit-font-smoothing:antialiased}
+.wrap{max-width:860px;margin:0 auto;padding:0 24px 88px}
+a{color:var(--purple);text-underline-offset:2px}
+
+header.hero{background:linear-gradient(160deg,#32006e 0%,#4b2e83 62%,#5c3a99 100%);color:#fff}
+header.hero .wrap{padding-top:38px;padding-bottom:30px}
+.back{display:inline-block;font-size:13px;color:var(--gold);text-decoration:none;margin-bottom:14px}
+.back:hover{text-decoration:underline}
+.eyebrow{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);margin:0 0 10px;font-weight:600}
+h1{font-size:clamp(27px,4.4vw,40px);line-height:1.13;margin:0 0 14px;letter-spacing:-.02em}
+.deck{font-size:18.5px;line-height:1.5;margin:0;max-width:64ch;color:#e7dffb}
+
+nav.toc{background:var(--card);border-bottom:1px solid var(--rule);position:sticky;top:0;z-index:5}
+nav.toc .wrap{padding-top:11px;padding-bottom:11px;display:flex;flex-wrap:wrap;gap:6px 16px;font-size:13px}
+nav.toc a{color:var(--ink-2);text-decoration:none;white-space:nowrap}
+nav.toc a:hover{color:var(--purple);text-decoration:underline}
+nav.toc b{color:var(--gold-muted);font-variant-numeric:tabular-nums;margin-right:4px}
+
+h2{font-size:24px;letter-spacing:-.01em;margin:50px 0 4px;padding-top:22px;border-top:2px solid var(--rule);
+  scroll-margin-top:56px}
+h2 .num{color:var(--gold-muted);font-variant-numeric:tabular-nums;margin-right:10px;font-size:18px}
+.sowhat{font-size:15.5px;font-weight:650;color:var(--purple);margin:6px 0 4px;max-width:72ch}
+h3{font-size:17px;margin:28px 0 6px;color:var(--purple)}
+p{margin:12px 0;max-width:72ch}
+ul,ol{max-width:72ch;padding-left:22px}
+li{margin:6px 0}
+
+.tw{overflow-x:auto;margin:18px 0}
+table{border-collapse:collapse;width:100%;font-size:14.5px}
+th,td{border-bottom:1px solid var(--rule);padding:9px 11px;text-align:left;vertical-align:top}
+th{background:rgba(75,46,131,.08);font-size:12.5px;text-transform:uppercase;letter-spacing:.06em;
+  color:var(--ink-2);font-weight:650}
+tbody tr:last-child td{border-bottom:none}
+code{background:var(--card);border:1px solid var(--rule);border-radius:4px;padding:1px 5px;
+  font-size:13px;font-family:ui-monospace,SFMono-Regular,Consolas,monospace}
+
+.callout{background:var(--card);border:1px solid var(--rule);border-left:4px solid var(--purple);
+  border-radius:8px;padding:14px 18px;margin:22px 0}
+.callout.warn{background:var(--warn-bg);border-left-color:var(--warn-br)}
+.callout p:first-child{margin-top:0} .callout p:last-child{margin-bottom:0}
+.callout h4{margin:0 0 6px;font-size:13px;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-2)}
+
+details{background:var(--card);border:1px solid var(--rule);border-radius:8px;padding:10px 16px;margin:18px 0}
+details summary{cursor:pointer;font-weight:650;font-size:14.5px;color:var(--purple)}
+details[open] summary{margin-bottom:6px}
+
+.chip{display:inline-block;font-size:11px;font-weight:650;letter-spacing:.04em;text-transform:uppercase;
+  padding:2px 8px;border-radius:4px;background:var(--rule);color:var(--ink-2);vertical-align:1px}
+.chip.gold{background:var(--gold);color:#3a2a00}
+.chip.open{background:#f3d6d6;color:#7a2020}
+@media (prefers-color-scheme:dark){.chip.open{background:#4a2020;color:#f0bcbc}}
+
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(132px,1fr));gap:12px;margin:24px 0 8px}
+.stat{background:var(--card);border:1px solid var(--rule);border-radius:10px;padding:13px 14px}
+.stat.key{border-color:var(--gold);border-width:2px}
+.stat b{display:block;font-size:25px;line-height:1.15;color:var(--purple);font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.stat span{display:block;font-size:12.5px;color:var(--ink-2);margin-top:3px}
+
+ol.timeline{list-style:none;padding:0;margin:20px 0;border-left:2px solid var(--rule)}
+ol.timeline li{margin:0;padding:10px 0 10px 20px;position:relative}
+ol.timeline li::before{content:"";position:absolute;left:-7px;top:18px;width:12px;height:12px;
+  border-radius:50%;background:var(--gold);border:2px solid var(--bg)}
+ol.timeline b{display:block;font-size:13px;color:var(--ink-2);letter-spacing:.04em;text-transform:uppercase}
+
+footer{border-top:2px solid var(--rule);margin-top:52px;padding-top:22px;font-size:13.5px;color:var(--ink-2)}
+@media print{header.hero{background:#4b2e83 !important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  nav.toc{display:none} details{display:block} details>*{display:block}}
+</style>
+
+<header class="hero">
+  <div class="wrap">
+    <a class="back" href="write-up.html">&larr; Back to the project write-up</a>
+    <p class="eyebrow">Deep dive &middot; instrument design &amp; validation</p>
+    <h1>Synthetic users, treated as an instrument that has to earn its readings</h1>
+    <p class="deck">Six conditions, three hypotheses with their nulls written first, and an apparatus
+      that proves comparability rather than assuming it. 51 traces captured, 30 of them coded &mdash;
+      the grounding measure scored against a scheme fixed before any coding began. The method, the
+      three defects the runs found, and why the answer right now is <em>stop running</em>.</p>
+  </div>
+</header>
+
+<nav class="toc"><div class="wrap">
+  <a href="#s1"><b>01</b>Where synthetic users are valid</a>
+  <a href="#s2"><b>02</b>Hypotheses &amp; nulls</a>
+  <a href="#s3"><b>03</b>The six conditions</a>
+  <a href="#s4"><b>04</b>Apparatus</a>
+  <a href="#s5"><b>05</b>Measures</a>
+  <a href="#s6"><b>06</b>Pre-registration &amp; raters</a>
+  <a href="#s7"><b>07</b>What ran, what it found</a>
+  <a href="#s8"><b>08</b>Verdict, gates, limits</a>
+</div></nav>
+
+<div class="wrap">
+
+<h2 id="s1"><span class="num">01</span>Where synthetic users are valid</h2>
+<p class="sowhat">They pilot instruments and pressure-test designs. They never replace participants
+and never support a frequency claim.</p>
+<p>A seven-person corpus can find attitudinal patterns. It cannot pressure-test a product against
+those patterns fifty times. Synthetic users close that gap for exactly three jobs &mdash; piloting an
+instrument before it touches a human, pressure-testing a design against a known attitude, and
+generating hypotheses worth asking a human about &mdash; and for nothing else. Not participant
+replacement, not prevalence, not a stand-in for a population segment.</p>
+
+<p>The known failure mode is <strong>flattening</strong>: an ungrounded LLM user converges toward one
+agreeable, competent, unbothered person regardless of the mask. That is what I set out to measure
+rather than assume. The carrier design &mdash; attitudinal spectrums, no demographics, shift triggers,
+and a task payload fixed outside the mask &mdash; is in
+<a href="write-up.html#s4">§04 of the project write-up</a> and not repeated here.</p>
+
+<p>Two terms recur below. A <strong>stop line</strong> (&ldquo;canary&rdquo;) is an exact sentence a
+condition must say to end a session &mdash; because it is exact, a paraphrase is detectable drift, which
+makes it the only fidelity check the scaffold-only control has. <strong>Anchor echo</strong> is whether
+a carrier's behaviour matches the interview-derived observables listed for it: the grounding test
+itself.</p>
+
+<h2 id="s2"><span class="num">02</span>Hypotheses, with the nulls written first</h2>
+<p class="sowhat">Each hypothesis has a pre-written outcome that would kill the project. That is the
+point of them.</p>
+<div class="tw">
+<table>
+<thead><tr><th></th><th>Hypothesis</th><th>What the null would mean</th></tr></thead>
+<tbody>
+<tr><td><strong>H1</strong></td><td>Grounded conditions diverge from the scaffold-only control on the probe events</td>
+    <td>If control &asymp; grounded: the scaffold and model default already produce the behaviour. <em>Grounding is decorative &mdash; stop investing in it.</em></td></tr>
+<tr><td><strong>H2</strong></td><td>Grounded conditions diverge from the ungrounded arm, <em>and</em> track their interview anchors where it tracks generic priors</td>
+    <td>If ungrounded &asymp; grounded on every measure: a model can invent the mindset without the interviews. Grounding buys legitimacy, not behaviour &mdash; weigh that before funding another derivation.</td></tr>
+<tr><td><strong>H3</strong></td><td>The grounded carriers stay separable <em>from each other</em> under real product pressure</td>
+    <td>If they collapse together: the mindset layer is too weak for apparatus use; sharpen the contrasts.</td></tr>
+</tbody>
+</table>
+</div>
+<p>Predictions exist only for the grounded carriers. The control and ungrounded cells are
+<strong>deliberately unscripted</strong> &mdash; record what happens, because a prediction written for a
+baseline is a prediction the baseline can be marked against unfairly.</p>
+
+<h2 id="s3"><span class="num">03</span>The six conditions</h2>
+<p class="sowhat">Four grounded carriers, two baselines, one verbatim-shared scaffold &mdash; so any
+difference in a trace is attributable to attitude, not to harness text.</p>
+
+<div class="tw">
+<table>
+<thead><tr><th>Condition</th><th>Pattern (confidence &middot; scrutiny &middot; autonomy &middot; risk &middot; exploration)</th><th>Provenance</th><th>Role</th></tr></thead>
+<tbody>
+<tr><td><strong>HOLLIS</strong><br>Guarded settler</td><td>capped &middot; conditionally accepting &middot; human-reliant &middot; restrictive &middot; settled</td><td>Grounded, two anchors</td><td>Treatment</td></tr>
+<tr><td><strong>ARLO</strong><br>Momentum experimenter</td><td>expanding &middot; accepting &middot; AI-autonomous &middot; permissive &middot; exploratory</td><td>Grounded, two anchors</td><td>Treatment</td></tr>
+<tr><td><strong>SAGE</strong><br>Verifying expander</td><td>expanding &middot; interrogating &middot; human&harr;self &middot; structured-restrictive &middot; exploratory</td><td>Grounded, two anchors</td><td>Treatment</td></tr>
+<tr><td><strong>WREN</strong><br>Earned-trust skeptic</td><td>capped &middot; interrogating &middot; human-first &middot; restrictive &middot; settled</td><td>Grounded, one anchor</td><td>Treatment</td></tr>
+<tr><td><strong>FELLIS</strong><br>Streak keeper</td><td>expanding &middot; accepting &middot; AI-autonomous &middot; permissive &middot; settled, with a superstition flip from permissive to defensive after repeated failure</td><td><strong>Ungrounded</strong> &mdash; invented by a siloed agent that read no repo files and saw no evidence</td><td>Baseline for H2</td></tr>
+<tr><td><strong>CONTROL</strong></td><td>no attitude scripted at all</td><td>Population floor + shared scaffold</td><td>Baseline for H1</td></tr>
+</tbody>
+</table>
+</div>
+
+<p>All six share verbatim scaffolding: accurate-failure rule, think-aloud baseline, obstacle cap,
+exact stop lines, population floor. ARLO exists because an earlier wave had a coverage hole &mdash; two
+of the participants sat permissive and none were modelled. WREN is kept deliberately distinct from a
+superficially similar earlier carrier: same interview anchor, but WREN's checking is <em>resented,
+defensive labour</em> with no planning craft, no human backstop and capped ambition. Planning or
+backstop language in a WREN trace is leakage from the older carrier, and the batch gets flagged.</p>
+
+<div class="callout">
+  <h4>Provenance, stated precisely</h4>
+  <p>No verbatim transcript quote backs any of these prompts. The live wave is derived from a
+  <strong>teammate's secondary synthesis</strong> of the full seven-participant corpus &mdash; not from
+  raw transcripts and not from my three-lens coding pass, which covered only the first three &mdash; and
+  every behavioural rule traces to a stated attribute pole or a named behavioural-logic sentence in
+  that synthesis. So the carriers are <em>two</em> steps from the interviews, and two of the four are
+  anchored partly on participants whose transcripts are not in my workspace at all. The ungrounded
+  arm's authorship property, by contrast, is protected mechanically: a fresh, siloed agent with no repo
+  or evidence access cannot have absorbed the grounding it is supposed to lack.</p>
+</div>
+
+<h2 id="s4"><span class="num">04</span>Apparatus</h2>
+<p class="sowhat">One frozen product image per arm, rebuilt per trial, with byte-identity of the
+starting artifact proved by a three-point hash chain rather than assumed.</p>
+<p>The product under test is a <strong>standalone, agent-native AI coding desktop app</strong> &mdash;
+not an editor extension, not a web product, not a CLI. The distinction is load-bearing: the surface
+has no editor and no terminal of its own, which is exactly why it is worth pointing at people who do
+not write code. Each arm gets one image, pinned by digest, rebuilt per trial &mdash; not a shared VM,
+which accumulates state across conditions and makes runs non-comparable. The digest goes in the batch
+memo, because the image <em>is</em> the product-version stamp.</p>
+
+<details>
+<summary>The seeded artifact, and why byte-identity is proved rather than trusted</summary>
+<p>Two task cards start from an artifact the user &ldquo;built earlier&rdquo; &mdash; a small events
+page, stale for one card and working for the other, identical for every condition. It is placed as a
+<strong>per-run parameter, never baked into the image</strong>, because re-committing the image would
+change the digest every manifest records as the product version.</p>
+<p>The state is hashed on the host, checked against a recorded hash, copied in through a read-only
+bind mount, re-hashed inside the container, and re-hashed again at run start. Every condition's
+manifest must show the same seed tree hash &mdash; that is the proof the cells are comparable, and it
+sits in the memo beside the image digest. A run on either card without a seed argument
+<strong>aborts before spending</strong>, and the seed state is cross-checked against the card, because
+swapping the two would silently measure the wrong thing.</p>
+<p>One harness rule is measurement rather than plumbing: the generated prompt <strong>replaces</strong>
+the harness system prompt rather than being appended to it. Appending would leave each condition
+running a slightly different scaffold, and H1 &mdash; entirely a claim about what the shared scaffold
+alone produces &mdash; would stop meaning anything. For the same reason stop lines are never re-asserted
+between turns: they are canaries, and repeating one destroys it as a measure.</p>
+</details>
+
+<h2 id="s5"><span class="num">05</span>What gets measured</h2>
+<p class="sowhat">Six measures, three of them auto-captured and three coded by hand &mdash; and the
+grounding claim rests entirely on the coded ones.</p>
+<div class="tw">
+<table>
+<thead><tr><th>#</th><th>Measure</th><th>Capture</th></tr></thead>
+<tbody>
+<tr><td>1</td><td><strong>Stop-line discipline</strong> &mdash; the exact line, at the right moment, no paraphrase</td><td>Auto</td></tr>
+<tr><td>2</td><td><strong>Probe events</strong> &mdash; behaviour at a permission ask, polished-looking output, a recurring failure, a jargon wall</td><td>Coded</td></tr>
+<tr><td>3</td><td><strong>Vocabulary + off-character behaviour</strong> &mdash; per-condition word lists, plus pre-registered surfaces the mindset would not open and moves it would not make</td><td>Mixed</td></tr>
+<tr><td>4</td><td><strong>Tension appearances</strong> &mdash; do grounded carriers surface their held contradictions? Counted and quoted</td><td>Coded</td></tr>
+<tr><td>5</td><td><strong>Trajectory stats</strong> &mdash; turns to done or quit, which canary fired, obstacles abandoned</td><td>Auto</td></tr>
+<tr><td>6</td><td><strong>Anchor echo</strong> &mdash; the grounding test</td><td>Coded</td></tr>
+</tbody>
+</table>
+</div>
+
+<p>Measure 3's behavioural half was added <em>after</em> a batch produced a signal the word detector
+could not read: two conditions spent much of several traces outside the app entirely, while the
+banned-word list covered that point for only two of five conditions. The control has neither list
+<strong>by design</strong> &mdash; its drift toward engineer-fluent speech is the H1 baseline, not a
+violation. Anchor-echo scores are also <strong>never pooled into a composite</strong>: a single
+grounding number would hide exactly the per-attribute pattern the study exists to see, and one of the
+five attributes is a manipulation check rather than grounding evidence at all.</p>
+
+<h2 id="s6"><span class="num">06</span>Pre-registration, and who actually coded</h2>
+<p class="sowhat">The measure with a pre-written rubric agreed 60% better than the one without &mdash;
+but the raters are LLM sessions, so this is codeability evidence, not human reliability.</p>
+
+<div class="tw">
+<table>
+<thead><tr><th>Measure</th><th>Rubric when the double-coded six were coded?</th><th>Cohen's &kappa;</th><th>p<sub>o</sub></th></tr></thead>
+<tbody>
+<tr><td><strong>6 &mdash; Anchor echo</strong></td><td>Yes, scheme pre-registered before any coding &mdash; but amended the next day, so every number carries <span class="chip">scoring amended after 6 of 30 traces coded</span></td><td><strong>0.674</strong>, n&nbsp;=&nbsp;21</td><td>0.905</td></tr>
+<tr><td><strong>2 &mdash; Probe events</strong></td><td>No &mdash; a provisional rubric arrived mid-batch, after these six</td><td><strong>0.417</strong>, n&nbsp;=&nbsp;24</td><td>0.708</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>The gap is the rubric</strong> &mdash; same traces, same two lenses, same day. But my own
+protocol is explicit that a measure with no pre-registered rubric cannot earn reliability evidence:
+<strong>the 0.417 is a codeability diagnostic, never a reliability warrant</strong>. It says the
+codebook was underspecified there, and the disagreements confirm it &mdash; they cluster on three
+undefined boundaries, each closable with one sentence of rule.</p>
+<p>Reported as the protocol requires: &kappa; never bare, always with its <em>n</em>,
+<em>p<sub>o</sub></em>, <em>p<sub>e</sub></em>, both marginals and the full confusion matrix, and never
+a verbal benchmark like &ldquo;substantial.&rdquo; Where a rater used a value the codebook does not
+define, or the notes do not carry the unit the pre-registration specifies, the calculator runs
+<strong>both defensible treatments and reports the band</strong> rather than picking one &mdash;
+improvising a unit is the failure that tool exists to prevent.</p>
+
+<div class="callout warn">
+  <h4>Who the raters are</h4>
+  <p>Two analytical lenses &mdash; one HCDE, one CS/AI &mdash; each run as a <strong>fresh, siloed LLM
+  session per trace</strong>, applying one codebook. Not two people, and not one session doing both.
+  I designed it this way to get agreement evidence at a scale one student cannot staff, and the same
+  siloed-multi-lens pattern runs through the interview coding. What it tests is whether my codebook is
+  specific enough to survive a different reader. What it cannot test is whether the codes match human
+  judgement &mdash; there is no human reliability check anywhere in this project, and that is the next
+  thing worth spending money on.</p>
+</div>
+
+<h3>The order things were fixed in</h3>
+<ol class="timeline">
+<li><b>Before any coding &mdash; 0 of 51 traces coded</b>
+  The anchor-echo scoring scheme is fixed and published: an observable&rarr;attribute codebook, 18
+  ordinal pairs, five condition-neutral indices. Scoring is against the frozen condition files, never
+  against the derivation source's own rating table.
+  <span class="chip gold">binding</span></li>
+<li><b>Same window, still 0 of 51 coded</b>
+  The <strong>rater design</strong> is fixed: which six traces are double-coded, by what rule, on which
+  two lenses, and how disagreements are handled.
+  <span class="chip gold">binding</span></li>
+<li><b>After the six, before the other 24</b>
+  The frozen clause list is published &mdash; 35 clauses for the grounded carriers plus 10 for the
+  ungrounded arm &mdash; fixing the &kappa; denominators. It lands <em>after</em> the double-coded six,
+  which is why every Measure 6 number carries the amendment stamp rather than a clean
+  pre-registration claim.
+  <span class="chip open">amends the scheme mid-stream</span></li>
+<li><b>Mid-batch</b>
+  Rubrics for probe events, tensions, the outcome key and the H1/H2/H3 decision rules are activated
+  <strong>in force but not ratified</strong>. Their item list was published mid-batch, so every number
+  off it carries <code>item set self-enumerated</code> until a verification pass clears it.
+  <span class="chip open">4 open</span></li>
+</ol>
+
+<p>The first two entries are a claim about <strong>authorship order</strong>, and that is the point of
+them: a scoring scheme fixed after someone has seen a result cannot be shown not to have been fitted
+to it. Those two can. The last two are the counterweight, and I would rather state them than round
+them off &mdash; the scheme was amended once mid-stream, four rubrics are usable today and explicitly
+not settled, and the outcome-key rubric has <strong>not been applied at all</strong>, because applying
+it is a separate blind pass and every rater on this wave is disqualified from it by construction.</p>
+
+<p>Six of the thirty traces are double-coded; the other 24 are single-coded and carry
+<span class="chip">single-coded &mdash; reliability-untested</span> in the same sentence as any number
+derived from them. Disagreements stay in the data: the protocol has me adjudicate them as an
+<em>added</em> record, so one trace can yield two rows and any merge must key on rater as well as trace.
+<strong>Ten disagreements from the double-coded six are still open</strong> &mdash; none has been
+adjudicated yet, and that is the current blocking task, not coding.</p>
+
+<h2 id="s7"><span class="num">07</span>What ran, and what it found</h2>
+<p class="sowhat">Three batches, 51 traces, $26.05 for the main one &mdash; and three design defects
+that each changed the apparatus.</p>
+<div class="stats">
+  <div class="stat"><b>51</b><span>live traces, three batches</span></div>
+  <div class="stat key"><b>30</b><span>coded &mdash; the main batch (6 &times; 5 runs)</span></div>
+  <div class="stat"><b>1,839</b><span>turns in that batch</span></div>
+  <div class="stat"><b>$26.05</b><span>total spend for it</span></div>
+  <div class="stat"><b>36</b><span>coding notes written</span></div>
+  <div class="stat key"><b>21</b><span>traces still uncoded</span></div>
+</div>
+
+<p>Outcomes across the main batch: <strong>10 completed &middot; 11 hit the turn cap &middot; 8 quit
+&middot; 1 ended with no canary</strong>. One seed tree hash across all thirty &mdash; the comparability
+proof held. An earlier run-cut sits in an archive and is <strong>never pooled</strong>, because an
+apparatus change (a container locale fix) sits between it and the rest. That change is recorded in no
+trace artifact, only in a derived filename and in prose; stamping container environment alongside the
+image digest is a fix I have specified and <em>not yet implemented</em>.</p>
+
+<p>The <a href="write-up.html#s6">project write-up tells the three defects as narrative</a>; here is
+the mechanism and what each one changed.</p>
+
+<h3>Defect 1 &mdash; the card had no reachable right answer</h3>
+<p><strong>Mechanism:</strong> the stale-page card asks for content that exists nowhere in the
+apparatus, so all fifteen traces were attempting an impossible repair; one passed a
+<code>changed: yes</code> check by stamping a fresh date over unchanged content.
+<strong>What changed:</strong> the launcher now copies the artifact's end state out before teardown
+with a post-run hash, correctness is coded rather than inferred from the changed-flag, and a later
+card was built with a right answer derivable from its own payload &mdash; the first one on which a
+functional-versus-factual prediction is scorable at all.</p>
+
+<h3>Defect 2 &mdash; the split tracked tool access, not attitude</h3>
+<p><strong>Mechanism:</strong> the harness grants no shell tool and the app has no terminal, but the
+container desktop has a terminal launcher on its taskbar. Some conditions left the app and clicked it;
+others never did, and that difference &mdash; not mindset &mdash; produced the batch's cleanest-looking
+split. <strong>What changed:</strong> I kept the terminal and promoted <em>leaving the product</em> to
+a pre-registered measure, scored on a surface a condition actually <em>opened</em> (a taskbar click),
+never on one its narration merely mentioned, and stamped into every run manifest before the run.
+Prospective only &mdash; those fifteen traces stay confounded and labelled.</p>
+
+<h3>Defect 3 &mdash; a uniform tax on a differentially scarce budget</h3>
+<p><strong>Mechanism:</strong> the pinned image ships no clipboard utility, so all 30 traces fell back
+to a slower typing path, costing a measured <strong>6&ndash;27% of active turns</strong> to render
+races and re-sends. The tax is uniform across conditions; the cap binds on active turns; and the
+censoring is differential &mdash; one grounded condition hit the cap <strong>5 of 5</strong>, the
+control <strong>0 of 5</strong>, with the rest in between. A flat cost paid out of an unequal budget
+lands hardest on the conditions under study. <strong>What changed:</strong> cap-hit cells are drawn as
+right-censored rather than as completed trajectories, and the cap moved from a budget setting to an
+open pre-registration question &mdash; which is what stopped the next batch.</p>
+
+<h2 id="s8"><span class="num">08</span>Verdict, open gates, and limits</h2>
+<p class="sowhat">Coding is done and adjudication is not; the turn cap is unresolved; four gates stand
+between this and any counted claim.</p>
+
+<div class="callout warn">
+  <h4>No further runs on the current card</h4>
+  <p>Three conditions were set for resuming. <strong>(a)</strong> all 30 traces coded &mdash;
+  <em>met</em>. <strong>(b)</strong> a pre-registered rule for the probe and tension measures &mdash;
+  <em>met provisionally</em>, which discharges the condition only as far as a provisional rubric
+  discharges anything. <strong>(c)</strong> the turn cap resolved <em>by pre-registration, not by
+  budget</em> &mdash; <strong>open, and sharper after coding than before it</strong>. Two card-specific
+  reasons reinforce it: the outcome rubric exists but has not been applied, and the working seed's
+  date window has closed, so no further run on this cut would be interpretable anyway.</p>
+</div>
+
+<p>Four gates stand between calibration status and a counted result. Three carry a proposed default
+so that silence resolves them rather than stalling them &mdash; and I am showing the proposals,
+including the one where my own proposal is to wave the gate through, because a sanitised gate table
+would be worse than useless.</p>
+
+<div class="tw">
+<table>
+<thead><tr><th>Gate</th><th>Why it blocks a counted claim</th><th>My proposed default</th></tr></thead>
+<tbody>
+<tr><td><strong>Per-vendor terms of service</strong></td><td>Driving a vendor's app with an agent is a policy question. Synthetic users are not human subjects, so this is a terms gate rather than an ethics-board one &mdash; which makes it easy to skip and important not to.</td><td>Accept outright <span class="chip open">undecided</span></td></tr>
+<tr><td><strong>Does the app load its own memory between runs?</strong></td><td>If it does, that state is not frozen between runs and the frozen-instrument premise fails outright. I rate this the existential one.</td><td>Accept for calibration; verify before any counted batch <span class="chip open">undecided</span></td></tr>
+<tr><td><strong>Counted vs calibration</strong></td><td>Promoting this wave from calibration to counted is a decision taken once, in writing &mdash; not something that happens by a number quietly appearing in a deck.</td><td>Promote this wave now that coding is done <span class="chip open">undecided</span></td></tr>
+<tr><td><strong>Executor and pricing seams</strong></td><td>The harness's executor path is live-unproven at the margin, and an unproven executor costs turns against a binding cap.</td><td>None &mdash; stays open <span class="chip open">undecided</span></td></tr>
+</tbody>
+</table>
+</div>
+
+<h3>Limits</h3>
+<ul>
+<li><strong>Patterns found in data, not segments.</strong> No frequency, prevalence or population
+claim. A seven-person convenience corpus whose participants share an overlapping course and
+professional context.</li>
+<li><strong>The carriers are two steps removed from the interviews</strong> &mdash; derived from a
+teammate's synthesis, and partly anchored on participants whose transcripts are not in my
+workspace.</li>
+<li><strong>Agreement is between LLM sessions, not people.</strong> No human reliability check exists,
+for the trace coding or the interview coding.</li>
+<li><strong>Most results are single-coded</strong>, and say so in the same breath as the number.</li>
+<li><strong>Ten disagreements are unadjudicated</strong>, and four rubrics are in force but not
+ratified.</li>
+<li><strong>Nothing here is counted.</strong> 51 traces of calibration data and four open gates.</li>
+</ul>
+
+<footer>
+<p><a href="write-up.html">&larr; Back to the project write-up</a></p>
+<p>All conditions, carriers and traces described here are <strong>synthetic</strong>. No participant
+transcript, quotation or identifiable detail appears on this page; the mindset carriers carry no
+demographics by design. Raw traces are local-only and never committed, because screenshots can carry
+an account identity.</p>
+</footer>
+
+</div>
+</html>

@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256" role="img" aria-labelledby="tA dA">
+  <title id="tA">Sounding Chamber emblem — confluence</title>
+  <desc id="dA">Two amber lines travel in parallel, bend toward each other and merge into a single line that rings outward in resonance arcs.</desc>
+  <rect x="0" y="0" width="256" height="256" rx="58" fill="#252A3A"/>
+  <g fill="none" stroke="#E2A653" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M44 80 L96 80 L144 128 L188 128" stroke-width="16"/>
+    <path d="M44 176 L96 176 L144 128" stroke-width="16"/>
+    <path d="M192 108 A22 22 0 0 1 192 148" stroke-width="9" opacity="0.55"/>
+    <path d="M204 96 A34 34 0 0 1 204 160" stroke-width="9" opacity="0.28"/>
+  </g>
+</svg>
