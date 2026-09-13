@@ -1,0 +1,353 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Builder-Research &mdash; project write-up</title>
+<style>
+:root{
+  --purple:#4b2e83; --purple-deep:#32006e; --gold:#ffc700; --gold-muted:#b7a57a;
+  --ink:#241a3a; --ink-2:#5b5470; --rule:#e4e1ea; --bg:#faf9fb; --card:#ffffff;
+  --warn-bg:#fff8e1; --warn-br:#e6b800;
+}
+@media (prefers-color-scheme:dark){
+  :root{ --ink:#ece9f3; --ink-2:#a79fc0; --rule:#3a3350; --bg:#16121f; --card:#1e1930;
+         --purple:#b9a3e3; --warn-bg:#2c2413; --warn-br:#8a7020; }
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font:16px/1.62 -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif;
+  -webkit-font-smoothing:antialiased}
+.wrap{max-width:850px;margin:0 auto;padding:0 24px 88px}
+a{color:var(--purple);text-underline-offset:2px}
+
+header.hero{background:linear-gradient(160deg,#32006e 0%,#4b2e83 62%,#5c3a99 100%);color:#fff}
+header.hero .wrap{padding-top:44px;padding-bottom:36px}
+.eyebrow{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);margin:0 0 10px;font-weight:600}
+h1{font-size:clamp(29px,4.8vw,43px);line-height:1.12;margin:0 0 14px;letter-spacing:-.02em}
+h1 em{font-style:normal;color:var(--gold)}
+.deck{font-size:19px;line-height:1.5;margin:0;max-width:63ch;color:#e7dffb}
+.deck strong{color:#fff}
+
+.metastrip{background:var(--card);border-bottom:1px solid var(--rule)}
+.metastrip .wrap{padding-top:16px;padding-bottom:16px;display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px 22px}
+.metastrip div{font-size:13.5px;line-height:1.45}
+.metastrip b{display:block;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--ink-2);margin-bottom:2px;font-weight:700}
+
+h2{font-size:25px;letter-spacing:-.01em;margin:50px 0 6px;padding-top:20px;border-top:2px solid var(--rule)}
+h2 .num{color:var(--gold-muted);font-variant-numeric:tabular-nums;margin-right:10px;font-size:19px}
+h3{font-size:17px;margin:28px 0 6px;color:var(--purple)}
+p{margin:12px 0;max-width:70ch}
+ul,ol{max-width:70ch;padding-left:22px}
+li{margin:6px 0}
+strong{font-weight:650}
+.lede{font-size:17.5px;color:var(--ink-2)}
+
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin:26px 0 8px}
+.stat{background:var(--card);border:1px solid var(--rule);border-radius:10px;padding:14px 15px}
+.stat.key{border-color:var(--gold);border-width:2px}
+.stat b{display:block;font-size:26px;line-height:1.15;color:var(--purple);font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.stat.key b{color:var(--purple)}
+.stat span{display:block;font-size:12.5px;color:var(--ink-2);margin-top:3px}
+
+.tw{overflow-x:auto;margin:18px 0}
+table{border-collapse:collapse;width:100%;font-size:14.5px}
+th,td{border-bottom:1px solid var(--rule);padding:9px 11px;text-align:left;vertical-align:top}
+th{background:rgba(75,46,131,.08);font-size:12.5px;text-transform:uppercase;
+  letter-spacing:.06em;color:var(--ink-2);font-weight:650}
+tbody tr:last-child td{border-bottom:none}
+
+.callout{background:var(--card);border:1px solid var(--rule);border-left:4px solid var(--purple);
+  border-radius:8px;padding:14px 18px;margin:22px 0}
+.callout.warn{background:var(--warn-bg);border-left-color:var(--warn-br)}
+.callout p:first-child{margin-top:0} .callout p:last-child{margin-bottom:0}
+.callout h4{margin:0 0 6px;font-size:13px;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-2)}
+
+.chip{display:inline-block;font-size:11px;font-weight:650;letter-spacing:.05em;text-transform:uppercase;
+  padding:2px 8px;border-radius:4px;background:var(--rule);color:var(--ink-2);vertical-align:1px}
+
+.role{background:var(--card);border:1px solid var(--rule);border-radius:10px;padding:4px 20px 16px;margin:24px 0}
+.role dt{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2);font-weight:700;margin-top:14px}
+.role dd{margin:3px 0 0;max-width:66ch}
+.role dl{margin:0}
+
+footer{border-top:2px solid var(--rule);margin-top:52px;padding-top:22px;font-size:13.5px;color:var(--ink-2)}
+.nextlink{display:inline-block;margin-top:8px;background:var(--purple);color:#fff;text-decoration:none;
+  padding:11px 18px;border-radius:8px;font-weight:600;font-size:15px}
+.nextlink:hover{background:var(--purple-deep)}
+@media print{header.hero{background:#4b2e83 !important;-webkit-print-color-adjust:exact;print-color-adjust:exact}}
+</style>
+
+<header class="hero">
+  <div class="wrap">
+    <p class="eyebrow">UX research &middot; methods &amp; instrumentation &middot; 2026</p>
+    <h1>I built a synthetic-user instrument, then <em>tested whether it worked</em> before trusting it</h1>
+    <p class="deck">Interviews with non-professional builders gave my team attitudinal patterns. I
+      turned those into synthetic users that drive a real AI coding product through its own
+      interface, and ran an experiment against an ungrounded arm to find out whether grounding
+      changes behaviour or just buys legitimacy. <strong>The experiment has produced no counted
+      result, and I am the reason why</strong> &mdash; I stopped the wave when the coding pass showed
+      the turn cap was censoring the exact contrast under test.</p>
+  </div>
+</header>
+
+<div class="metastrip">
+  <div class="wrap">
+    <div><b>When</b>July &ndash; September 2026</div>
+    <div><b>Context</b>Graduate HCDE team project</div>
+    <div><b>My lane</b>Synthetic-user instrument, apparatus, analysis protocol, tooling</div>
+    <div><b>Stack</b>Docker &middot; Python &middot; Node &middot; PowerShell &middot; computer-use agent</div>
+    <div><b>Product driven</b>A standalone, agent-native AI coding desktop app</div>
+    <div><b>Status</b>Calibration data only &mdash; no counted results</div>
+  </div>
+</div>
+
+<div class="wrap">
+
+<h2 id="s1"><span class="num">01</span>The short version</h2>
+<p class="lede">My team asked what &ldquo;dev-adjacent&rdquo; builders actually do with AI coding
+tools. I took the interview findings and built an instrument from them &mdash; then spent most of my
+time establishing that the instrument could not be trusted yet, and saying so.</p>
+
+<div class="stats">
+  <div class="stat"><b>7</b><span>interviews, 5 transcribed in this repo</span></div>
+  <div class="stat"><b>6</b><span>synthetic conditions, incl. 2 baselines</span></div>
+  <div class="stat"><b>51</b><span>agent traces captured</span></div>
+  <div class="stat key"><b>30</b><span>coded on 3 measures &mdash; the evidence base</span></div>
+  <div class="stat key"><b>3</b><span>design defects the runs exposed</span></div>
+  <div class="stat"><b>$26.05</b><span>API spend, 30-trace batch</span></div>
+</div>
+
+<div class="callout">
+  <h4>What stopping actually changed</h4>
+  <p>After the main batch I <strong>stopped the wave</strong>: no further runs on that task card. The
+  turn cap censored one grounded condition on 5 of 5 runs and the control on 0 of 5, which biases
+  exactly the contrast under test. The consequence is that the cap stopped being a budget setting and
+  became a pre-registration question that has to be answered before anything counts &mdash; and the 30
+  traces already captured stay labelled as calibration rather than being quietly promoted into a
+  result. Coding is done; <strong>adjudication is not</strong> &mdash; ten disagreements from the
+  double-coded subset are still open.</p>
+</div>
+
+<div class="role">
+  <dl>
+    <dt>Designed and specified by me</dt>
+    <dd>The synthetic-user kit and its condition prompts &middot; the container apparatus and the
+    GUI-only capture harness &middot; the validation experiment (hypotheses, measures, run matrix)
+    &middot; all four pre-registrations and the two-lens rater design &middot; the trace parser, batch
+    driver, &kappa; calculator and generation tooling.</dd>
+    <dt>Executed by LLM agents I briefed, reviewed by me</dt>
+    <dd>The coding pass and its notes &middot; the agreement report &middot; the batch memos &middot;
+    much of the drafting throughout, including this page. The agents were deliberately siloed from
+    each other; the briefs and the decisions about what to trust are the artifacts I stand behind. The
+    ungrounded comparison arm was <em>written</em> by a siloed agent on purpose &mdash; that is the
+    experimental design, not a shortcut.</dd>
+    <dt>My teammates'</dt>
+    <dd>The interview instrument and the interviews themselves &middot; the &ldquo;mindsets, not
+    personas&rdquo; framing, chosen before I started &middot; the secondary synthesis of the interview
+    corpus that the live mindset wave is derived from &middot; the shared job-card battery my task
+    cards extend &middot; recruiting and the team's own prototype work.</dd>
+  </dl>
+</div>
+
+<h2 id="s2"><span class="num">02</span>What the interviews said</h2>
+<p>Seven semi-structured interviews with people who build real things without being professional
+developers. Five are transcribed and de-identified in my workspace; all seven feed the mindset
+derivation, by way of a teammate's synthesis of the full corpus. Provenance, since it bears on how
+much weight to give this: an inductive three-lens coding pass over the first three transcripts
+&mdash; three LLM coders, each briefed with a different analytical lens and siloed from the other two,
+a design I built and ran &mdash; plus a targeted read across all five transcripts on one question.</p>
+
+<p>That targeted question turned out to be the load-bearing one: <strong>what happens when a build
+leaves the maker's own machine?</strong></p>
+<ul>
+<li><strong>Three of the five had never published anything outward &mdash; and each stopped for a
+different reason.</strong> Liability, authorship, and how the work would be received once known to be
+AI-made. Three reasons is not a pattern, and I am not claiming one; what matters is that
+<em>none of them was capability</em>, and all three are invisible to a study that only watches people
+build.</li>
+<li><strong>Verification is described as unpaid labour, not craft.</strong> The participants who
+checked hardest resented it; those most confident the tool could build anything checked least. That
+inverse relation is why &ldquo;scrutiny&rdquo; and &ldquo;confidence&rdquo; are separate axes in the
+instrument instead of one competence scale.</li>
+</ul>
+<p>The first finding is why the hardest task card in the apparatus is not &ldquo;build something&rdquo;
+but <em>&ldquo;make this safe enough to hand to someone else.&rdquo;</em></p>
+
+<h2 id="s3"><span class="num">03</span>Why this needed an instrument</h2>
+<p>A seven-person corpus is enough to find attitudinal patterns and nowhere near enough to
+pressure-test a product against them. The obvious move &mdash; synthesise users with an LLM and run
+those instead &mdash; is also the move the current literature is most consistent about failing:
+ungrounded synthetic users flatten toward one agreeable, competent, unbothered person regardless of
+the mask.</p>
+<p>So I stopped treating synthetic users as a shortcut and built them as an <strong>instrument that
+has to be validated</strong>. The design decision that follows is the one I would defend hardest: I
+kept an <strong>ungrounded comparison arm</strong>, written by a siloed agent that read no repo files
+and saw no evidence, plus a scaffold-only control with no attitude scripted at all. The null
+hypothesis was written down first, in plain words: <em>&ldquo;grounding is decorative &mdash; stop
+investing in it.&rdquo;</em> If the invented user behaves like the grounded ones, the interviews
+bought legitimacy rather than behaviour, and the team should know that before funding another
+derivation.</p>
+
+<p>Two adjacent studies are designed and gated rather than run &mdash; a product-comparison study
+behind a per-vendor terms-of-service review, and a public-friction corpus whose harvest I gated on
+freezing its screening rubric. This page is about the one that ran.</p>
+
+<h2 id="s4"><span class="num">04</span>How the instrument is built</h2>
+<p>Each synthetic user is a <strong>mindset carrier</strong>: positions on five shared attitudinal
+spectrums, carrying no demographics at all. Three design choices, each with a cost I accepted:</p>
+<ul>
+<li><strong>No demographics.</strong> Demographic detail invites active bias (stereotyping) and
+passive bias (excluding people who don't fit the sketch). The cost: no group-comparative analysis is
+possible &mdash; fine, because a seven-person convenience corpus could not have supported one.</li>
+<li><strong>Shift triggers.</strong> One person can move between mindsets mid-task, so each carrier
+names the conditions under which it moves. A static persona cannot represent that, and much of the
+design signal lives there.</li>
+<li><strong>The job is never in the mask.</strong> Every task card ships a fixed payload, identical
+across all six conditions. Let a condition invent its own task and the manipulated variable silently
+changes from <em>mindset</em> to <em>idea</em> &mdash; and a model left to invent picks something easy
+to build.</li>
+</ul>
+<p>Two derivation waves exist on different attribute sets. They are <strong>never pooled</strong>,
+and rather than trust an operator to remember that, I made the trace parser hard-stop on a batch
+spanning both. The superseded wave's prompts stay byte-frozen: they are the instrument under test,
+and silently editing an instrument invalidates every trace already run against it.</p>
+
+<p class="lede" style="margin-top:26px">The conditions, apparatus, measures, pre-registrations and
+full results have their own write-up.</p>
+<p><a class="nextlink" href="write-up-synth-users.html">Read the synthetic-user deep dive &rarr;</a></p>
+
+<h2 id="s5"><span class="num">05</span>What the agreement check showed</h2>
+
+<div class="callout warn">
+  <h4>Read this before any &kappa; on either page</h4>
+  <p>My two &ldquo;independent raters&rdquo; are not people. They are <strong>two analytical lenses,
+  each run as a fresh, siloed LLM session per trace</strong>, applying one codebook. Every agreement
+  figure is agreement between two briefs, and &ldquo;coded&rdquo; throughout means coded by a briefed
+  LLM session rather than by a detector. No human reliability check has been run &mdash; not for the
+  trace coding and not for the interview coding.
+  <a href="write-up-synth-users.html#s6">Why I designed it that way, and what it does and doesn't
+  test &rarr;</a></p>
+</div>
+
+<div class="tw">
+<table>
+<thead><tr><th>Measure</th><th>Rubric when the double-coded six were coded?</th><th>Cohen's &kappa;</th></tr></thead>
+<tbody>
+<tr><td><strong>Anchor echo</strong> &mdash; does behaviour match the interview-derived observables? (the grounding test)</td>
+    <td>Yes &mdash; scheme fixed while 0 of 51 traces were coded. Amended the following day, after these six: every number off it carries <span class="chip">scoring amended after 6 of 30 traces coded</span></td>
+    <td><strong>0.674</strong>, n&nbsp;=&nbsp;21</td></tr>
+<tr><td><strong>Probe events</strong> &mdash; behaviour at a permission ask, at polished output, at a repeated failure, at a jargon wall</td>
+    <td>No &mdash; a provisional rubric arrived mid-batch, after these six</td>
+    <td><strong>0.417</strong>, n&nbsp;=&nbsp;24</td></tr>
+</tbody>
+</table>
+</div>
+
+<p><strong>The gap is the rubric.</strong> Same traces, same two lenses, same day &mdash; the measure
+with a written scoring scheme agreed roughly 60% higher than the one without. That is a useful
+argument for pre-registration precisely because it fell out of the data rather than out of a prior,
+and it was directly actionable: the disagreements on the weaker measure clustered on three undefined
+boundaries, each closable with one sentence of rule.</p>
+
+<p>One caveat my own protocol insists on, and I will not soften it: <strong>the 0.417 is a
+codeability diagnostic, not a reliability warrant.</strong> A measure with no pre-registered rubric
+cannot earn reliability evidence, however its &kappa; comes out. It says my codebook was underspecified
+there. It does not say the codes are wrong, and it cannot say they are right.</p>
+
+<h3>The rest of the reliability design</h3>
+<ul>
+<li><strong>6 of 30 traces double-coded, 24 single.</strong> Agreement evidence without paying to
+double-code everything. The cost: most results are single-coded and carry a
+<span class="chip">single-coded &mdash; reliability-untested</span> stamp <em>in the same sentence as
+the number</em>, never in a footnote.</li>
+<li><strong>Disagreements stay in the data.</strong> The protocol has me adjudicate them as an
+<em>added</em> record, so one trace can yield two rows and any merge must key on rater as well as
+trace &mdash; otherwise two independent readings collapse into one arbitrary survivor. Ten
+disagreements from the double-coded six are still open; none has been adjudicated yet.</li>
+<li><strong>A bare &kappa; is forbidden by my own protocol.</strong> The calculator emits
+<em>p<sub>o</sub></em>, <em>p<sub>e</sub></em>, both marginals and the full confusion matrix, and
+never a verbal benchmark like &ldquo;substantial.&rdquo;</li>
+</ul>
+
+<h2 id="s6"><span class="num">06</span>What the runs exposed</h2>
+
+<h3>A task card measuring something real that isn't what it claims</h3>
+<p>One card asked the synthetic user to repair a stale page. <strong>Zero of fifteen traces produced
+the correct content</strong> &mdash; because those events existed nowhere in the apparatus. The card
+measures how an attitude handles an <em>impossible</em> repair: interesting, and not what its stated
+outcome measure assumed. One trace stamped a fresh &ldquo;last updated&rdquo; date over unchanged
+stale content and would have passed any mechanical &ldquo;did the file change?&rdquo; test. That
+single trace is why the apparatus now captures end state and codes correctness instead of trusting a
+changed-flag.</p>
+
+<h3>A confound that invalidated a cell</h3>
+<p>The cleanest-looking split in that batch tracked <strong>terminal use</strong>, not mindset. My
+harness grants the agent no shell tool, and the app under test has no terminal &mdash; but the
+container desktop it runs on has a terminal launcher on its taskbar, and some conditions left the app
+and clicked it. So those cells cannot carry a grounding claim. I kept the terminal and promoted
+leaving-the-product to a measure in its own right, <em>prospectively</em>; the fifteen already-run
+traces stay confounded and labelled, not reinterpreted.</p>
+
+<h3>A uniform tax on a differentially scarce budget</h3>
+<p>All 30 traces in the main batch lost a measured <strong>6&ndash;27% of active turns</strong> to a
+clipboard fallback, because the pinned product image shipped no clipboard utility. The tax is uniform
+across conditions &mdash; but it is charged in active turns, the cap binds on active turns, and the
+censoring is differential. A flat cost paid out of an unequal budget lands hardest on exactly the
+conditions under study. This is the reasoning that turned &ldquo;raise the cap&rdquo; into
+&ldquo;stop running.&rdquo;</p>
+
+<p>A smaller one worth naming: the container locale change that forced an entire run-cut into an
+archive appears in <strong>no</strong> trace artifact &mdash; not the manifest, not the run config. It
+survives only in a derived filename and in prose. Recording container environment beside the image
+digest is a fix I have specified and not yet implemented.</p>
+
+<h2 id="s7"><span class="num">07</span>What I built to make it run</h2>
+<ul>
+<li><strong>Container-per-product apparatus</strong> &mdash; one frozen product image per arm, pinned
+by digest, rebuilt per trial. Not a shared VM, which accumulates state across conditions and makes
+runs non-comparable.</li>
+<li><strong>A GUI-only capture harness</strong> that drives the product through its own interface and
+writes every stream a measure needs: turn screenshots, think-aloud narration, transcript, token and
+cost ledger, stop-line and vocabulary detection, run manifest.</li>
+<li><strong>A comparability proof, not a comparability assumption.</strong> The seeded starting
+artifact is hashed on the host, re-hashed inside the container, and re-hashed again at run start, and
+every condition's manifest must show the same hash. A run that needs a seed and doesn't get one
+aborts before spending.</li>
+<li><strong>One shared source of truth</strong> for trial generation, consumed by both the browser
+tool and the CLI so they cannot drift &mdash; verified by generating identical configs for the same
+selection.</li>
+<li><strong>Tooling that refuses to guess:</strong> the parser stops on an unrecognised condition name
+and hard-errors on a cross-wave batch; the batch driver front-loads every $0 check so nothing boots
+or spends on a bad wave.</li>
+</ul>
+<p>One side thread: because the project kept calling its subjects &ldquo;builders,&rdquo; I embedded
+64 role terms with two corpus-trained models against anchor axes declared in the script, and found the
+candidate terms are not interchangeable &mdash; and that a result only one model produces is a property
+of that model, not of English.</p>
+
+<h2 id="s8"><span class="num">08</span>What I would do differently</h2>
+<ul>
+<li><strong>I would pre-register the turn cap as an outcome class from run one.</strong> I treated a
+cap hit as a failure rather than as a censored observation, and that single framing error has the
+widest blast radius in the project &mdash; it is the reason 30 traces cannot yet support a claim.</li>
+<li><strong>I would version the environment, not just the image.</strong> A container locale change
+cost me a whole run-cut, and it is recorded nowhere a future reader would look.</li>
+<li><strong>I would design one task card with a knowable right answer first.</strong> Two of the four
+shared cards I extended could not score correctness at all; I retrofitted the fix after fifteen traces
+had already been spent on one of them.</li>
+<li><strong>I would write the rubric for every measure before coding, not just the one I cared
+most about.</strong> The 0.674/0.417 split is the cost of that omission, measured.</li>
+</ul>
+
+<footer>
+<p>All conditions, carriers and traces described here are <strong>synthetic</strong>. Interview
+material is confidential: no raw transcripts, no identifiable participant detail, and only
+de-identified, aggregate summary leaves a study folder. Raw agent traces are local-only and never
+committed, because screenshots can carry an account identity. Every number on this page comes from
+calibration runs and none is presented as a counted result.</p>
+</footer>
+
+</div>
+</html>

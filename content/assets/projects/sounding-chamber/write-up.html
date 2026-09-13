@@ -1,0 +1,1028 @@
+<title>Sounding Chamber</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+
+<style>
+/* ============ tokens: light is the bare :root ============ */
+:root{
+  --ground:#EDEEF2;
+  --panel:#FFFFFF;
+  --panel-2:#E4E7EE;
+  --slab:#1B2030;
+  --slab-ink:#E8EAF0;
+  --slab-dim:#9AA2B8;
+  --ink:#1B2030;
+  --ink-2:#404A63;
+  --ink-3:#69748E;
+  --rule:#CBD0DC;
+  --rule-soft:#DDE1E9;
+  --amber:#B4762A;
+  --amber-slab:#E2A653;
+  --amber-wash:#F6E9D3;
+  --rose:#B04058;
+  --rose-wash:#F7DFE4;
+  --teal:#2A7A61;
+  --teal-wash:#D9EDE4;
+  --shadow:0 1px 2px rgba(27,32,48,.07), 0 8px 22px -14px rgba(27,32,48,.28);
+  --measure:41rem;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --ground:#14192A; --panel:#1E2436; --panel-2:#262D42; --slab:#0E1220;
+    --slab-ink:#E8EAF0; --slab-dim:#8E97AE;
+    --ink:#E6E9F1; --ink-2:#B7BFD2; --ink-3:#8792AB;
+    --rule:#333B54; --rule-soft:#272E44;
+    --amber:#E2A653; --amber-slab:#E2A653; --amber-wash:#3A2F1D;
+    --rose:#E2809A; --rose-wash:#3B2028;
+    --teal:#6FBF9B; --teal-wash:#16302A;
+    --shadow:0 1px 2px rgba(0,0,0,.3), 0 10px 26px -16px rgba(0,0,0,.7);
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#14192A; --panel:#1E2436; --panel-2:#262D42; --slab:#0E1220;
+  --slab-ink:#E8EAF0; --slab-dim:#8E97AE;
+  --ink:#E6E9F1; --ink-2:#B7BFD2; --ink-3:#8792AB;
+  --rule:#333B54; --rule-soft:#272E44;
+  --amber:#E2A653; --amber-slab:#E2A653; --amber-wash:#3A2F1D;
+  --rose:#E2809A; --rose-wash:#3B2028;
+  --teal:#6FBF9B; --teal-wash:#16302A;
+  --shadow:0 1px 2px rgba(0,0,0,.3), 0 10px 26px -16px rgba(0,0,0,.7);
+}
+
+*,*::before,*::after{box-sizing:border-box}
+body{
+  background:var(--ground); color:var(--ink);
+  font-family:"Newsreader",Georgia,"Times New Roman",serif;
+  font-size:17.5px; line-height:1.62; -webkit-font-smoothing:antialiased;
+}
+:focus-visible{outline:2.5px solid var(--amber); outline-offset:3px; border-radius:2px}
+
+.wrap{max-width:76rem; margin:0 auto; padding:0 clamp(1rem,4vw,3rem)}
+.col{max-width:var(--measure); margin-inline:auto}
+.col-wide{max-width:56rem; margin-inline:auto}
+section{padding-block:clamp(2.5rem,5.5vw,4rem)}
+.stack{display:flex; flex-direction:column; gap:1.15rem}
+.stack-tight{display:flex; flex-direction:column; gap:.6rem}
+
+h1,h2,h3,.eyebrow,.num,.kicker{font-family:"Familjen Grotesk",system-ui,-apple-system,"Segoe UI",sans-serif}
+h1{font-size:clamp(2.5rem,6vw,4.1rem); line-height:.98; font-weight:700;
+   letter-spacing:-.028em; text-wrap:balance; margin:0}
+h2{font-size:clamp(1.55rem,3.1vw,2.05rem); line-height:1.1; font-weight:600;
+   letter-spacing:-.02em; text-wrap:balance; margin:0}
+p{margin:0}
+a{color:var(--ink); text-decoration-color:var(--amber); text-underline-offset:3px; text-decoration-thickness:1.5px}
+a:hover{color:var(--amber)}
+strong{font-weight:500; color:var(--ink)}
+
+.eyebrow{font-size:.7rem; font-weight:600; letter-spacing:.17em; text-transform:uppercase; color:var(--ink-3); margin:0}
+.lede{font-size:clamp(1.1rem,1.9vw,1.28rem); line-height:1.5; color:var(--ink-2); font-weight:300}
+.small{font-size:.95rem; color:var(--ink-2)}
+
+code,.mono,.ipa{font-family:"IBM Plex Mono","DejaVu Sans Mono",ui-monospace,SFMono-Regular,Menlo,monospace}
+code{font-size:.86em; background:var(--panel-2); padding:.1em .36em; border-radius:3px; color:var(--ink); font-variant-ligatures:none}
+
+/* ============ hero ============ */
+.hero{padding-top:clamp(2rem,4.5vw,3rem); padding-bottom:clamp(1.5rem,4vw,2.5rem)}
+.hero-grid{display:grid; gap:clamp(1.75rem,4vw,2.75rem); grid-template-columns:1fr}
+@media (min-width:64rem){ .hero-grid{grid-template-columns:1fr 1fr; align-items:start} }
+.mark{display:flex; align-items:center; gap:.7rem; margin-bottom:1.4rem}
+.mark svg{width:38px; height:38px; flex:none; border-radius:10px}
+.mark span{font-family:"Familjen Grotesk",sans-serif; font-size:.78rem; font-weight:600;
+  letter-spacing:.19em; text-transform:uppercase; color:var(--ink-3)}
+.hero h1 .drift{color:var(--amber); font-style:italic; font-family:"Newsreader",serif; font-weight:400; letter-spacing:-.01em}
+.hero-lede{margin-top:1.1rem; max-width:34rem}
+.repo{margin-top:1.5rem; display:flex; flex-wrap:wrap; gap:.65rem; align-items:flex-start}
+.repo-btn{display:inline-flex; align-items:center; gap:.5rem; font-family:"IBM Plex Mono",monospace;
+  font-size:.82rem; font-weight:500; text-decoration:none; color:var(--slab-ink);
+  background:var(--slab); border:1px solid var(--slab); padding:.6rem .9rem; border-radius:6px}
+.repo-btn:hover{color:var(--amber-slab); border-color:var(--amber-slab)}
+.repo-note{font-family:"IBM Plex Mono",monospace; font-size:.74rem; color:var(--ink-3); line-height:1.5; max-width:23rem}
+.repo-note b{color:var(--rose); font-weight:600}
+
+.figs{display:grid; grid-template-columns:repeat(3,1fr);
+  margin-top:1.8rem; border-top:1.5px solid var(--ink); border-bottom:1px solid var(--rule)}
+.fig{padding:.95rem .9rem .95rem 0; border-right:1px solid var(--rule)}
+.fig:last-child{border-right:0}
+.fig .num{display:block; font-size:1.6rem; font-weight:700; letter-spacing:-.03em;
+  line-height:1; font-variant-numeric:tabular-nums; color:var(--ink)}
+.fig .num em{font-style:normal; color:var(--ink-3); font-weight:500}
+.fig p{font-size:.79rem; line-height:1.32; color:var(--ink-2); margin-top:.42rem; font-family:"Familjen Grotesk",sans-serif}
+
+/* ============ playable board ============ */
+.board{background:var(--slab); border-radius:12px; padding:1.1rem 1.2rem 1rem; box-shadow:var(--shadow); color:var(--slab-ink)}
+.board-head{display:flex; justify-content:space-between; align-items:baseline; gap:1rem;
+  border-bottom:1px solid rgba(255,255,255,.11); padding-bottom:.65rem}
+.board-head .eyebrow{color:var(--slab-dim)}
+.board-head .clock{font-family:"IBM Plex Mono",monospace; font-size:.74rem; color:var(--amber-slab); font-variant-numeric:tabular-nums}
+.prophecy{font-family:"Newsreader",serif; font-style:italic; font-size:1.02rem; color:var(--slab-ink);
+  padding:.7rem 0 .1rem; line-height:1.4}
+.lex{width:100%; border-collapse:collapse; font-family:"IBM Plex Mono",monospace; font-size:.79rem; margin-top:.5rem}
+.lex th{text-align:left; font-weight:500; font-size:.61rem; letter-spacing:.13em; text-transform:uppercase;
+  color:var(--slab-dim); padding:.45rem .4rem .4rem 0; font-family:"Familjen Grotesk",sans-serif}
+.lex td{padding:.26rem .4rem .26rem 0; border-top:1px solid rgba(255,255,255,.06); vertical-align:middle}
+.lex .w{color:var(--slab-ink); font-weight:500}
+.lex .p{color:var(--slab-dim); font-variant-numeric:tabular-nums; border-radius:3px; padding-inline:.2rem;
+  transition:color .3s ease, background-color .6s ease}
+.lex tr[data-hot="1"] .p{color:var(--amber-slab); background:rgba(226,166,83,.16)}
+.tag{font-family:"Familjen Grotesk",sans-serif; font-size:.6rem; letter-spacing:.09em;
+  text-transform:uppercase; padding:.12rem .4rem; border-radius:99px; white-space:nowrap}
+.tag.merge{color:var(--amber-slab); border:1px solid rgba(226,166,83,.45)}
+.tag.keep{color:#E2809A; border:1px solid rgba(226,128,154,.4)}
+.tag.star{color:#9AA2B8; border:1px solid rgba(154,162,184,.4)}
+.tag.done{color:#6FBF9B; border:1px solid rgba(111,191,155,.55)}
+
+.hand{display:grid; grid-template-columns:1fr 1fr; gap:.45rem; margin-top:.85rem}
+.card{text-align:left; cursor:pointer; background:rgba(255,255,255,.035); color:var(--slab-ink);
+  border:1px solid rgba(255,255,255,.14); border-radius:7px; padding:.5rem .6rem; font:inherit;
+  display:flex; flex-direction:column; gap:.15rem}
+.card:hover:not(:disabled){border-color:var(--amber-slab); background:rgba(226,166,83,.09)}
+.card:disabled{opacity:.4; cursor:default}
+.card .cn{font-family:"Familjen Grotesk",sans-serif; font-size:.78rem; font-weight:600; line-height:1.15}
+.card .cnot{font-family:"IBM Plex Mono",monospace; font-size:.7rem; color:var(--amber-slab)}
+.card .cprev{font-family:"IBM Plex Mono",monospace; font-size:.65rem; color:var(--slab-dim)}
+.card .cprev b{color:var(--slab-ink); font-weight:500}
+
+.board-log{font-family:"IBM Plex Mono",monospace; font-size:.71rem; line-height:1.55; color:var(--slab-dim);
+  border-top:1px solid rgba(255,255,255,.11); margin-top:.8rem; padding-top:.6rem;
+  height:5.4rem; overflow-y:auto}
+.board-log div{margin-bottom:.3rem}
+.board-log b{color:var(--slab-ink); font-weight:500}
+.board-log .good{color:#6FBF9B}
+.board-log .bad{color:#E2809A}
+.board-log .gold{color:var(--amber-slab)}
+.board-ctl{display:flex; gap:.45rem; margin-top:.6rem}
+.board-ctl button{font-family:"IBM Plex Mono",monospace; font-size:.7rem; cursor:pointer;
+  background:transparent; color:var(--slab-dim); border:1px solid rgba(255,255,255,.18);
+  padding:.32rem .65rem; border-radius:5px}
+.board-ctl button:hover{color:var(--amber-slab); border-color:var(--amber-slab)}
+.board-cap{font-size:.74rem; color:var(--ink-3); margin-top:.65rem; line-height:1.5; font-family:"Familjen Grotesk",sans-serif}
+
+/* ============ figure ============ */
+.cover{margin-block:clamp(1.4rem,3.5vw,2.2rem)}
+.cover svg{display:block; width:100%; height:auto; border-radius:12px}
+figcaption{font-family:"Familjen Grotesk",sans-serif; font-size:.78rem; color:var(--ink-3); margin-top:.6rem; line-height:1.45}
+
+/* ============ panels ============ */
+.panel{background:var(--panel); border:1px solid var(--rule-soft); border-radius:10px;
+  padding:1rem 1.1rem; box-shadow:var(--shadow); overflow-x:auto}
+.panel-lbl{font-family:"Familjen Grotesk",sans-serif; font-size:.66rem; font-weight:600;
+  letter-spacing:.15em; text-transform:uppercase; color:var(--ink-3);
+  display:flex; gap:.55rem; align-items:center; margin-bottom:.7rem}
+.panel-lbl::before{content:""; width:14px; height:2px; background:var(--amber); flex:none}
+pre{margin:0; font-family:"IBM Plex Mono",monospace; font-size:.775rem; line-height:1.62;
+  color:var(--ink-2); white-space:pre; overflow-x:auto}
+pre .ok{color:var(--teal)}
+pre .bad{color:var(--rose); font-weight:500}
+pre .dim{color:var(--ink-3)}
+pre .hi{color:var(--amber); font-weight:500}
+
+table.data{width:100%; border-collapse:collapse; font-family:"IBM Plex Mono",monospace;
+  font-size:.775rem; font-variant-numeric:tabular-nums}
+table.data caption{text-align:left; font-family:"Familjen Grotesk",sans-serif; font-size:.78rem;
+  color:var(--ink-3); padding-bottom:.6rem; line-height:1.4}
+table.data th{text-align:right; font-family:"Familjen Grotesk",sans-serif; font-weight:600;
+  font-size:.64rem; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-3);
+  padding:.3rem .55rem; border-bottom:1.5px solid var(--ink)}
+table.data th:first-child, table.data td:first-child{text-align:left; padding-left:0}
+table.data td{padding:.34rem .55rem; border-bottom:1px solid var(--rule-soft); text-align:right; color:var(--ink-2)}
+table.data td:first-child{color:var(--ink); font-weight:500}
+table.data tr:last-child td{border-bottom:0}
+td .pill{display:inline-block; font-family:"Familjen Grotesk",sans-serif; font-size:.62rem;
+  letter-spacing:.07em; text-transform:uppercase; padding:.1rem .4rem; border-radius:99px}
+.pill.ok{background:var(--teal-wash); color:var(--teal)}
+.pill.warn{background:var(--amber-wash); color:var(--amber)}
+.pill.bad{background:var(--rose-wash); color:var(--rose)}
+
+/* "what this does not show" — body weight, not fine print */
+.limit{border-left:2.5px solid var(--rose); padding:.15rem 0 .15rem 1.1rem; font-size:.97rem;
+  line-height:1.56; color:var(--ink-2)}
+.limit b{font-family:"Familjen Grotesk",sans-serif; font-size:.66rem; letter-spacing:.13em;
+  text-transform:uppercase; color:var(--rose); font-weight:600; display:block; margin-bottom:.3rem}
+
+.finding{border-left:2.5px solid var(--amber); padding-left:1.1rem}
+.finding .kicker{font-size:.68rem; font-weight:600; letter-spacing:.16em; text-transform:uppercase;
+  color:var(--amber); margin:0 0 .35rem}
+
+.gloss{display:grid; gap:.1rem}
+.gloss div{display:grid; grid-template-columns:10rem 1fr; gap:.9rem; padding:.5rem 0;
+  border-bottom:1px solid var(--rule-soft); align-items:baseline}
+.gloss dt{font-family:"IBM Plex Mono",monospace; font-size:.8rem; color:var(--ink); font-weight:500}
+.gloss dd{margin:0; font-size:.95rem; color:var(--ink-2); line-height:1.5}
+@media (max-width:34rem){ .gloss div{grid-template-columns:1fr; gap:.15rem} }
+
+hr.div{border:0; border-top:1px solid var(--rule); margin:0}
+footer{padding-block:2.4rem 3.4rem; border-top:1.5px solid var(--ink)}
+.foot-grid{display:flex; flex-wrap:wrap; gap:1.4rem 3rem; justify-content:space-between; align-items:flex-start}
+footer p{font-family:"IBM Plex Mono",monospace; font-size:.74rem; color:var(--ink-3); line-height:1.6}
+
+@media (prefers-reduced-motion:reduce){ *{animation-duration:.001ms !important; transition-duration:.001ms !important} }
+</style>
+
+<div class="wrap">
+
+<!-- ============================ HERO ============================ -->
+<header class="hero">
+  <div class="mark">
+    <svg viewBox="0 0 256 256" role="img" aria-label="Sounding Chamber mark: two lines converging into one that rings outward">
+      <rect x="0" y="0" width="256" height="256" rx="58" fill="#1B2030"></rect>
+      <g fill="none" stroke="#E2A653" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M44 80 L96 80 L144 128 L188 128" stroke-width="16"></path>
+        <path d="M44 176 L96 176 L144 128" stroke-width="16"></path>
+        <path d="M192 108 A22 22 0 0 1 192 148" stroke-width="9" opacity="0.55"></path>
+        <path d="M204 96 A34 34 0 0 1 204 160" stroke-width="9" opacity="0.28"></path>
+      </g>
+    </svg>
+    <span>Sounding Chamber</span>
+  </div>
+
+  <div class="hero-grid">
+    <div>
+      <h1>Every move is a <span class="drift">find-and-replace</span> across an entire language.</h1>
+      <p class="lede hero-lede">A puzzle game where the failure you cannot see is the one that matters:
+        a board that is still playable and can no longer be won. Nothing is generated until exhaustive
+        search has proved otherwise. The write-up below is mostly about the things that check turned
+        out to be wrong about.</p>
+
+      <div class="repo">
+        <a class="repo-btn" href="https://github.com/Spiffy-Panda" rel="noopener">
+          <svg width="15" height="15" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0a8 8 0 0 0-2.53 15.59c.4.07.55-.17.55-.38l-.01-1.34c-2.23.48-2.7-1.07-2.7-1.07-.36-.93-.89-1.18-.89-1.18-.73-.5.05-.49.05-.49.8.06 1.23.83 1.23.83.72 1.23 1.88.87 2.34.67.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 0 1 4 0c1.53-1.03 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.28.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48l-.01 2.19c0 .21.15.46.55.38A8 8 0 0 0 8 0Z"></path></svg>
+          github.com/Spiffy-Panda
+        </a>
+        <p class="repo-note"><b>The code is not published.</b> Sounding Chamber is a local repository,
+          so every figure here is self-reported and none of it can be audited by you. That is the
+          fairest criticism of this page and it is not fixed yet. The game to the right is the real
+          engine, running in your browser.</p>
+      </div>
+
+      <div class="figs">
+        <div class="fig">
+          <span class="num">41<em>/41</em></span>
+          <p>Behaviour assertions green, in 42&nbsp;ms. There is no build step to run first.</p>
+        </div>
+        <div class="fig">
+          <span class="num">500<em>/500</em></span>
+          <p>Generated puzzles proved winnable by search before the generator would return them.</p>
+        </div>
+        <div class="fig">
+          <span class="num">5<em>&nbsp;of&nbsp;12</em></span>
+          <p>Openings with a card you actually need that lose, or leave the level unwinnable.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- the real thing, playable -->
+    <div>
+      <div class="board">
+        <div class="board-head">
+          <p class="eyebrow">Level 1 · The Bear Necessity</p>
+          <span class="clock">year <span id="yr">1200</span> · <span id="turns">6</span> left</span>
+        </div>
+        <p class="prophecy">“The king shall be slain by a bear.”</p>
+        <table class="lex">
+          <thead><tr><th>Spelling (frozen)</th><th>Sound</th><th></th></tr></thead>
+          <tbody id="lexbody"></tbody>
+        </table>
+        <div class="hand" id="hand"></div>
+        <div class="board-log" id="blog" aria-live="polite"></div>
+        <div class="board-ctl">
+          <button type="button" id="undo">Rewind a generation</button>
+          <button type="button" id="reset">Start over</button>
+        </div>
+      </div>
+      <p class="board-cap">Play it. Merge <strong>bear</strong> into <strong>beer</strong> in six
+        generations without ever letting <strong>pen</strong> meet <strong>pin</strong>. Each card
+        shows how many words it would move before you commit.
+        <br><br>One disclosure, because a later section depends on it: this engine works on
+        <strong>letters</strong>, not sounds. The slashes hold spelling standing in for pronunciation.
+        That shortcut is exactly what the study further down is about.</p>
+    </div>
+  </div>
+</header>
+
+<hr class="div">
+
+<!-- ============================ WHAT IT IS ============================ -->
+<section>
+  <div class="col stack">
+    <p class="eyebrow">What it is</p>
+    <h2>A prophecy binds to sounds, not meanings</h2>
+    <p>You cannot break the prophecy. You can, over six generations, change how the word
+      <em>bear</em> is pronounced until it is the word <em>beer</em>, at which point the prophecy is
+      satisfied by a falling barrel and the king survives. In the year 1250, a barrel falls from the
+      brewer's cart. The king, regrettably, is slain by a beer. He gets better.</p>
+    <p>The catch is that pronunciation change is not surgical. A sound change applies to every word
+      in the language at once. Aim at <em>bear</em> and you also hit <em>bread</em>, <em>pen</em>,
+      and <em>ale</em>. If <em>pen</em> and <em>pin</em> ever become the same word, the royal scribe
+      orders a thousand pins, the army receives a thousand pens, and the siege does not go well. The
+      puzzle is not the target. The puzzle is the collateral damage.</p>
+    <p>This is also real linguistics. Say <em>Mary</em>, <em>marry</em> and <em>merry</em> aloud. For
+      most of North America those are now one word, three vowels collapsed into one before an
+      <span class="ipa">r</span>, and almost nobody who did it noticed. The <em>pen</em> and
+      <em>pin</em> merger already finished across most of the American South, generations ago. The
+      frightening part of a merger is not that it happens. It is that it is invisible from the
+      inside, to the people it happens to.</p>
+    <p>Five levels exist, each built around one real mechanism. <strong>The Brewer's Flood</strong>:
+      the queen must drown in a flood, so make the flood a flute, but hardening the final consonant
+      first destroys the environment the rounding rule needs. <strong>The Chain Gang</strong>: the
+      champion is felled by a dart, and <em>dirt</em> is two rungs up a vowel ladder that moves all
+      at once. <strong>The Loan Shark</strong>: a word arrives from abroad mid-game, immune to every
+      rule you played before it docked.</p>
+  </div>
+
+  <figure class="cover col-wide">
+    <svg viewBox="0 0 900 360" role="img" aria-labelledby="covT covD">
+      <title id="covT">Level 1 drawn as ten tracks through six generations</title>
+      <desc id="covD">Ten horizontal tracks, one per word in the level, run left to right across six
+        generation marks from the year 1200 to the year 1350. Two amber tracks, bear and beer, bend
+        toward each other and join into a single amber line that rings outward at the year 1250. Two
+        rose tracks, pen and pin, run parallel and never touch, as do bread and blood. Two grey
+        tracks, knight and night, also join. The remaining grey tracks wander without meeting.</desc>
+      <rect x="0" y="0" width="900" height="360" rx="12" fill="#1B2030"></rect>
+      <g stroke="#2C3348" stroke-width="1">
+        <line x1="170" y1="30" x2="170" y2="322"></line>
+        <line x1="280" y1="30" x2="280" y2="322"></line>
+        <line x1="390" y1="30" x2="390" y2="322"></line>
+        <line x1="500" y1="30" x2="500" y2="322"></line>
+        <line x1="610" y1="30" x2="610" y2="322"></line>
+        <line x1="720" y1="30" x2="720" y2="322"></line>
+        <line x1="830" y1="30" x2="830" y2="322"></line>
+      </g>
+      <g fill="#6B7591" font-family="IBM Plex Mono, monospace" font-size="11" text-anchor="middle">
+        <text x="170" y="342">1200</text>
+        <text x="390" y="342">1250</text>
+        <text x="610" y="342">1300</text>
+        <text x="830" y="342">1350</text>
+      </g>
+
+      <!-- inert grey tracks -->
+      <g fill="none" stroke="#39415A" stroke-width="2.5" stroke-linecap="round">
+        <path d="M170 48 L830 48"></path>
+        <path d="M170 82 L830 82"></path>
+        <path d="M170 116 L500 116 L560 130 L830 130"></path>
+        <path d="M170 130 L830 130"></path>
+        <path d="M170 288 L830 288"></path>
+        <path d="M170 254 L830 254"></path>
+      </g>
+      <g fill="#6B7591" font-family="IBM Plex Mono, monospace" font-size="12" text-anchor="end">
+        <text x="160" y="52">king</text>
+        <text x="160" y="86">ale</text>
+        <text x="160" y="120">knight</text>
+        <text x="160" y="134">night</text>
+        <text x="160" y="258">bread</text>
+        <text x="160" y="292">blood</text>
+      </g>
+      <text x="846" y="126" fill="#6B7591" font-family="IBM Plex Mono, monospace" font-size="10">bonus</text>
+
+      <!-- forbidden pair: parallel, never meeting -->
+      <g fill="none" stroke="#E2809A" stroke-width="3" stroke-linecap="round">
+        <path d="M170 158 L830 158"></path>
+        <path d="M170 190 L830 190"></path>
+      </g>
+      <g fill="#E2809A" font-family="IBM Plex Mono, monospace" font-size="12" text-anchor="end">
+        <text x="160" y="162">pen</text>
+        <text x="160" y="194">pin</text>
+      </g>
+      <text x="846" y="178" fill="#E2809A" font-family="IBM Plex Mono, monospace" font-size="10">kept apart</text>
+
+      <!-- target pair: converging, then continuing as one -->
+      <g fill="none" stroke="#E2A653" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M170 212 L280 212 L390 226"></path>
+        <path d="M170 240 L280 240 L390 226"></path>
+        <path d="M390 226 L830 226"></path>
+      </g>
+      <g fill="#E2A653" font-family="IBM Plex Mono, monospace" font-size="12" text-anchor="end">
+        <text x="160" y="216">bear</text>
+        <text x="160" y="244">beer</text>
+      </g>
+      <circle cx="390" cy="226" r="6" fill="#E2A653"></circle>
+      <path d="M410 212 A18 18 0 0 1 410 240" fill="none" stroke="#E2A653" stroke-width="3" opacity=".5" stroke-linecap="round"></path>
+      <path d="M424 204 A28 28 0 0 1 424 248" fill="none" stroke="#E2A653" stroke-width="3" opacity=".25" stroke-linecap="round"></path>
+      <text x="846" y="222" fill="#E2A653" font-family="IBM Plex Mono, monospace" font-size="10">merged</text>
+    </svg>
+    <figcaption>Level 1: ten words, six generations, 1200 to 1350. Two of them have to meet. Two of
+      them must never meet. The rest are in the room whether you like it or not.</figcaption>
+  </figure>
+</section>
+
+<hr class="div">
+
+<!-- ============================ TERMS ============================ -->
+<section>
+  <div class="col stack">
+    <p class="eyebrow">Six words, before they are needed</p>
+    <h2>The vocabulary this page runs on</h2>
+    <dl class="gloss">
+      <div><dt>merger</dt><dd>A sound change that makes two previously different words sound the same. Permanent, and it takes the whole vocabulary with it.</dd></div>
+      <div><dt>e → i / _r</dt><dd>Standard notation for a sound change. Read it as: e becomes i, but only when an r comes next. Everything after the slash is the condition. Without a slash the rule fires everywhere, which is usually the trap.</dd></div>
+      <div><dt>feeding, bleeding</dt><dd>One rule creating the conditions another rule needs, or destroying them. This is why order matters, and why a card you need can be the card that kills you.</dd></div>
+      <div><dt>bricked</dt><dd>The run can continue but can no longer be won. Nothing on screen says so, which is why a solver has to.</dd></div>
+      <div><dt>par</dt><dd>The fewest moves in which a level can be won, established by exhaustive search rather than by the designer's guess.</dd></div>
+      <div><dt>IPA</dt><dd>The International Phonetic Alphabet. One symbol per sound, so <span class="ipa">/dˈoːɹ/</span> describes <em>door</em> without English spelling getting a vote.</dd></div>
+    </dl>
+  </div>
+</section>
+
+<hr class="div">
+
+<!-- ============================ THESIS ============================ -->
+<section>
+  <div class="col stack">
+    <p class="eyebrow">The engineering</p>
+    <h2>The design document is the test suite</h2>
+    <p>The engine is pure functions over token arrays. A word is a list of tokens; a rule is a
+      function from that list to another list; a level is data. Nothing is random once play starts,
+      and two words are the same word when their lists join to the same string.</p>
+    <p>That buys one thing worth having: the prose playthroughs in the design document can be run.
+      The story that says <em>the unconditioned raising loses immediately on pen and pin, and also
+      strands the target out of reach</em> exists as three assertions with those exact values. Here
+      is the whole run, on this machine, today.</p>
+  </div>
+
+  <div class="col-wide panel" style="margin-top:1.4rem">
+    <p class="panel-lbl">node scrap_scripts/js/10_run_selftests.mjs</p>
+<pre><span class="ok">PASS</span>  S1 pen=pin lose
+<span class="ok">PASS</span>  S1 bear bricked /biar/
+<span class="ok">PASS</span>  S1 collateral=4
+<span class="dim">…</span>
+<span class="ok">PASS</span>  L2 harden-first bricks (BFS finds no win)
+<span class="ok">PASS</span>  L3 climb_all loses (double trap: hits berth/birth AND bat/bet)
+<span class="ok">PASS</span>  L5 loan arrives after play 2
+<span class="ok">PASS</span>  Daily generator: 60/60 seeds verified solvable   <span class="dim">&lt;- the suite spot-checks 60</span>
+<span class="ok">PASS</span>  Daily generator: deterministic per seed
+{
+  "storyCount": 12,   "levelCount": 29,   <span class="hi">"total": 41,   "failed": 0,</span>
+  "msLoad": 2.77,     "msStory": 0.74,    "msLevel": 38.50,
+  "msSum":  <span class="hi">42.01</span>,     "node": "v22.22.2"
+}</pre>
+  </div>
+
+  <div class="col stack" style="margin-top:1.4rem">
+    <p>The suite spot-checks 60 generated seeds. The 500 in the hero comes from a separate study
+      script run today, further down this page. They are different numbers from different programs
+      and the page says so rather than quietly promoting the larger one.</p>
+    <p>The board at the top of this page is a copy of that engine, which raises the obvious question
+      of whether it is still the same engine. So that is checked too, by diffing the copy against the
+      original over every state reachable in three moves.</p>
+  </div>
+
+  <div class="col-wide panel" style="margin-top:1.4rem">
+    <p class="panel-lbl">node scrap_scripts/js/17_embedded_engine_parity.mjs</p>
+<pre><span class="ok">PASS</span>  lexicon: same words, spellings and starting tokens
+<span class="ok">PASS</span>  hand: same six cards in the same order
+<span class="ok">PASS</span>  rule outputs identical over <span class="hi">1080 word applications across 30 reachable states</span>
+<span class="ok">PASS</span>  S1 trap merges pen/pin
+<span class="ok">PASS</span>  S1 trap bricks bear to /biar/
+<span class="ok">PASS</span>  S3 raise_r first moves 0 words
+<span class="ok">PASS</span>  S4 detour wins with the bonus
+<span class="dim">…</span>
+all parity checks passed                                            <span class="dim">exit 0</span></pre>
+  </div>
+
+  <div class="col stack" style="margin-top:1.4rem">
+    <p><strong>There is no build.</strong> That is the measurement, not a boast. The prototype is
+      four HTML pages and four JavaScript files served by a small Python static server. Timing a
+      build step that does not exist is the honest version of a fast build, and it says nothing
+      about what a real one would cost.</p>
+
+    <div class="limit">
+      <b>What this does not show</b>
+      Single machine, single run: Windows 10, Node v22.22.2. An earlier draft of this page reported
+      42.01&nbsp;ms as 39&nbsp;ms, because the field I called the total summed only two of its three
+      phases and silently dropped module load. That is the same defect as the one two sections down,
+      committed by me, about my own instrumentation, on a page whose subject is instrumentation. The
+      figure also excludes Node startup, roughly 40&nbsp;ms more.
+      <br><br>
+      A second correction of the same kind. I first reported that the browser runs the 29 level
+      assertions in 20.8&nbsp;ms against Node's 38.5, and offered no explanation. There is one: the
+      page runs its own suite once during load, so I had timed a warmed-up second run against a cold
+      first one. The comparison was not measuring what I said it measured, so it is gone rather than
+      explained away.
+    </div>
+  </div>
+</section>
+
+<hr class="div">
+
+<!-- ============================ SOLVER ============================ -->
+<section>
+  <div class="col stack">
+    <p class="eyebrow">Verification</p>
+    <h2>Nothing is generated until search says it can be won</h2>
+    <p>Two failure modes matter more than losing. A level can be bricked, and a generated level can
+      be impossible. Both are invisible to playtesting and both are trivially detectable by search,
+      so a breadth-first solver walks every legal sequence of card plays up to the turn budget and
+      returns the shortest win, the shortest win with the bonus, or nothing at all.</p>
+  </div>
+
+  <div class="col-wide panel" style="margin-top:1.4rem">
+    <table class="data">
+      <caption>Five authored levels. <span class="mono">Par</span> is the designer's stated minimum;
+        <span class="mono">Search par</span> is what exhaustive search found. Measured today.</caption>
+      <thead><tr><th>Level</th><th>Words</th><th>Cards</th><th>Regions</th><th>Par</th><th>Search par</th><th>States</th><th>ms</th><th>Agree</th></tr></thead>
+      <tbody>
+        <tr><td>L1 Bear Necessity</td><td>10</td><td>6</td><td>1</td><td>2</td><td>2</td><td>44</td><td>2.40</td><td><span class="pill ok">yes</span></td></tr>
+        <tr><td>L2 Brewer's Flood</td><td>12</td><td>5</td><td>1</td><td>2</td><td>2</td><td>32</td><td>0.60</td><td><span class="pill ok">yes</span></td></tr>
+        <tr><td>L3 Chain Gang</td><td>14</td><td>6</td><td>1</td><td>3</td><td>3</td><td>140</td><td>2.99</td><td><span class="pill ok">yes</span></td></tr>
+        <tr><td>L4 Two Crowns</td><td>8</td><td>5</td><td>2</td><td>2</td><td>2</td><td>324</td><td>5.65</td><td><span class="pill ok">yes</span></td></tr>
+        <tr><td>L5 Loan Shark</td><td>6</td><td>6</td><td>1</td><td>3</td><td>3</td><td>44</td><td>0.69</td><td><span class="pill ok">yes</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="col stack" style="margin-top:1.4rem">
+    <p>584 states across all five levels, 12.3&nbsp;ms. The space is small because a hand is five or
+      six cards and a budget is six turns, and it is small <em>by design</em>: the levels were built
+      shallow enough that verification is total rather than sampled. That is a trade, not a
+      limitation. Depth was spent on ordering constraints instead of branching factor.</p>
+
+    <div class="finding" style="margin-top:.6rem">
+      <p class="kicker">What the search is actually for</p>
+      <p>Across 5 authored levels and 500 generated ones, brute force never found a shorter solution
+        than the one already written down. Par and the author's own line agreed 505 times out of 505.
+        As a way of <em>discovering</em> optimal play, the solver produced nothing.</p>
+    </div>
+    <p>Its value is entirely in the negative direction: proving a state has <em>no</em> win. That is
+      the check a designer cannot do by hand and a playtester cannot do at all, and it is the only
+      thing that catches bricking. Verification earns its cost when the counterexample is the
+      product.</p>
+    <div class="limit">
+      <b>What this does not show</b>
+      The five authored pars were almost certainly read off this same solver when the levels were
+      written, so "agree" on those five is a consistency check, not independent confirmation. The 500
+      generated levels are the real evidence, and they are drawn from only three hand-written puzzle
+      families, so this cannot distinguish "the solver finds nothing extra" from "there is nothing
+      extra to find in a puzzle of this shape."
+    </div>
+  </div>
+
+  <div class="col-wide panel" style="margin-top:1.4rem">
+    <table class="data">
+      <caption>Every legal opening move in the five authored levels, classified by playing it and
+        running the solver on what remains. n=33, one row per card per region.</caption>
+      <thead><tr><th>Card is a…</th><th>Openings</th><th>Still winnable</th><th>Bricked</th><th>Instant loss</th></tr></thead>
+      <tbody>
+        <tr><td>Key — needed to win</td><td>12</td><td>7</td><td>2</td><td>3</td></tr>
+        <tr><td>Trap</td><td>8</td><td>0</td><td>2</td><td>6</td></tr>
+        <tr><td>Bonus</td><td>6</td><td>6</td><td>0</td><td>0</td></tr>
+        <tr><td>Filler</td><td>6</td><td>6</td><td>0</td><td>0</td></tr>
+        <tr><td>Decoy</td><td>1</td><td>1</td><td>0</td><td>0</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="col stack" style="margin-top:1.4rem">
+    <p>That first row is the design working. Five of the twelve openings with a card you genuinely
+      need end the run: three lose on the spot, two leave a game that can still be played and can no
+      longer be won. Playing Final Hardening before Back Rounding in Level 2 destroys the environment
+      the second rule needs, and nothing on screen tells you. Trap cards behave as labelled: eight
+      openings, no survivors.</p>
+    <div class="limit">
+      <b>What this does not show</b>
+      33 openings over 5 hand-authored levels, and the key, trap and filler labels are the designer's
+      own, so this measures whether the levels match their own intent, not whether players experience
+      them that way. No player has touched this build. The single Decoy row is one observation and
+      should be read as noise.
+    </div>
+  </div>
+</section>
+
+<hr class="div">
+
+<!-- ============================ GENERATOR ============================ -->
+<section>
+  <div class="col stack">
+    <p class="eyebrow">Determinism</p>
+    <h2>The same seed is the same Tuesday</h2>
+    <p>The daily puzzle is generated from a hash of the date string, so every player gets the same
+      board without a server deciding anything. That matters for a reason beyond tidiness: if the
+      generator drifted between processes, the verification that ran when the puzzle was built would
+      be describing a different puzzle than the one played, and two players comparing scores would be
+      comparing different games.</p>
+  </div>
+
+  <div class="col-wide panel" style="margin-top:1.4rem">
+    <p class="panel-lbl">Generated level, hashed — two separate processes, same output</p>
+<pre>                         process A            process B
+seed <span class="hi">'panda'</span>            13bbe4c36223e22e     13bbe4c36223e22e
+seed <span class="hi">'2026-09-09'</span>       69a3740335799565     69a3740335799565
+seed <span class="hi">'study-7'</span>          8bf4c3dfa731bdbd     8bf4c3dfa731bdbd
+
+500 seeds drawn:  <span class="ok">500 levels produced, 0 rejected</span>
+  canonical solution wins on            500/500
+  search par == author's solution       500/500
+  search cost per level                 26–44 states (median 32)
+  wall clock                            0.28 ms per level
+  puzzle family A / B / C               159 / 167 / 174</pre>
+  </div>
+
+  <div class="col stack" style="margin-top:1.4rem">
+    <p>The three families are the three shapes a daily puzzle can take, and an uneven draw would mean
+      the daily has a recognisable silhouette that a regular player would learn to read off the
+      board. A chi-square test against a uniform draw gives <span class="mono">0.68</span> on two
+      degrees of freedom, well under the 5.99 that would flag a skew.</p>
+    <div class="limit">
+      <b>What this does not show</b>
+      No detectable bias at n=500, which is not the same as no bias. A real skew of a couple of
+      points would pass this test unnoticed. Three families is also a small alphabet, and this says
+      nothing about bias in the words, onsets or prophecy text drawn <em>inside</em> a family, which
+      is where a player would actually notice repetition first.
+    </div>
+
+    <div class="finding" style="margin-top:1.2rem">
+      <p class="kicker">The safety net that has never caught anything</p>
+      <p>The generator is written to resample. It draws a candidate, rejects it if two words are born
+        identical, rejects it if the canonical solution does not win, rejects it if search cannot
+        confirm solvability, and retries up to twenty times. In 500 draws it was never used. Every
+        level was accepted on the first attempt.</p>
+    </div>
+    <p>Zero rejections in 500 trials puts a 95% upper bound of about <strong>0.6%</strong> on the
+      pooled rejection rate. So the retry loop is either dead weight or an untested branch guarding a
+      rare event, and an untested branch in the one code path that decides what a player is allowed
+      to see is the worse of the two readings. It should be exercised on purpose, with a deliberately
+      broken family, rather than left to chance.</p>
+    <div class="limit">
+      <b>What this does not show</b>
+      That bound is pooled across all three families. Each family only got about 167 draws, so the
+      per-family bound is roughly <strong>1.8%</strong>, three times looser: one pathological family
+      could be rejecting at a percent or two and hide inside the pooled figure. A fourth family
+      written next month could reject constantly and none of this would have predicted it.
+    </div>
+  </div>
+</section>
+
+<hr class="div">
+
+<!-- ============================ THE BUG ============================ -->
+<section>
+  <div class="col stack">
+    <p class="eyebrow">The thing that broke</p>
+    <h2>The display agreed with itself and was wrong</h2>
+    <p>A second prototype speaks the drifting words aloud, so you can hear a merger happen. It
+      highlights which words in an overheard line a rule will affect. It picked those words by
+      looking at their <em>spelling</em>.</p>
+    <p>A card demonstrating the fronting of the <span class="ipa">uː</span> vowel highlighted the
+      word <em>door</em>, because <em>door</em> contains the letters “oo.” It does not contain the
+      sound. Its pronunciation is <span class="ipa">/dˈoːɹ/</span>, a different vowel entirely,
+      inherited from a different history. The rule ran, the display lit up, and the audio was
+      identical before and after, because nothing had happened.</p>
+    <p>This is the game's own premise turned against it. English spelling lies about English sound;
+      that lie is why the prophecy loophole works at all, and it is why a tool that reads spelling
+      will confidently report changes that no ear could hear. The fix was to select words by running
+      the rule against their actual phonemes. To size what that changed, I ran both selectors over
+      the same 139-word vocabulary and the five rules the tool can demonstrate.</p>
+  </div>
+
+  <div class="col-wide panel" style="margin-top:1.4rem">
+    <table class="data">
+      <caption>Spelling-based versus phoneme-based selection, same words, same rules, all
+        139 × 5 = 695 decisions. “Spelling only” means the letters matched but no sound moves,
+        the <em>door</em> class.</caption>
+      <thead><tr><th>Rule</th><th>Spelling says yes</th><th>Sound says yes</th><th>Spelling only</th><th>Sound only</th></tr></thead>
+      <tbody>
+        <tr><td>r-dropping</td><td>32</td><td>14</td><td><span class="pill bad">18</span></td><td>0</td></tr>
+        <tr><td>pin–pen merger</td><td>12</td><td>8</td><td><span class="pill bad">5</span></td><td>1</td></tr>
+        <tr><td>goose-fronting</td><td>13</td><td>14</td><td><span class="pill bad">2</span></td><td>3</td></tr>
+        <tr><td>vowel raising</td><td>15</td><td>19</td><td>0</td><td><span class="pill warn">4</span></td></tr>
+        <tr><td>th-fronting</td><td>17</td><td>17</td><td>0</td><td>0</td></tr>
+        <tr><td>all five</td><td>89</td><td>72</td><td><span class="pill bad">25</span></td><td><span class="pill warn">8</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="col stack" style="margin-top:1.4rem">
+    <p>97 word-rule pairs were flagged by at least one method, and the two disagreed on 33 of them.
+      The two directions are different failures and should not be pooled into one rate: in 25 cases
+      spelling fires and no sound moves, and in 8 cases spelling misses a change that does happen.
+      Against spelling's own 89 flags, 25 are spurious.</p>
+    <p>The worst offender is r-dropping. Of 32 words whose spelling has an r after a vowel, 18 move
+      no phoneme at all, because <em>brother</em>, <em>feather</em> and <em>hammer</em> end in a
+      single r-coloured vowel rather than a vowel followed by an r.</p>
+    <div class="limit">
+      <b>What this does not show</b>
+      An earlier draft of this section put a 95% confidence interval on that 34%. That was wrong and
+      I have removed it. These 695 decisions are a <em>census</em> of a fixed word list run through
+      two deterministic programs, not a sample of anything: run it again and you get 33 of 97 with
+      probability one. There is no sampling distribution for an interval to describe. The clustering
+      makes it worse still, since 18 of the 33 disagreements come from one transcription convention
+      rather than 18 independent events.
+      <br><br>
+      What the number really depends on is the transcriber. This phonemiser writes <em>brother</em>
+      as <span class="ipa">/bɹˈʌðɚ/</span>, one r-coloured vowel; a transcriber who wrote it as
+      <span class="ipa">ə</span> followed by <span class="ipa">ɹ</span> would make r-dropping fire
+      and most of those 18 would vanish. The word list is also the tool's own pool, chosen partly
+      because those words illustrate these rules, which pushes the flagged share up relative to
+      running text. And the two selectors were compared to each other, never to a human phonetician.
+      No ground truth was consulted, so none of the 33 is established as an <em>error</em>. They are
+      disagreements.
+    </div>
+  </div>
+</section>
+
+<hr class="div">
+
+<!-- ============================ GREEN CHECK ============================ -->
+<section>
+  <div class="col stack">
+    <p class="eyebrow">The metric that lied</p>
+    <h2>A passing check that was measuring the wrong thing</h2>
+    <p>The speech package lives in one place and is copied into each consumer that needs it. A sync
+      script stamps a content hash for every copied file, and a check flag re-reads them so a copy
+      that has drifted from its source gets caught. It reports clean, at version 0.2.0.</p>
+    <p>The version is not 0.2.0. The package was bumped by editing a version file, and the constant
+      compiled into the module, the one any consumer reads at runtime, was left behind at 0.1.0. The
+      hash check compares each copy against its source and both are equally stale, so they match
+      perfectly and the light goes green. <strong>It verifies that the copies agree. It never asks
+      whether they are right.</strong></p>
+  </div>
+
+  <div class="col-wide panel" style="margin-top:1.4rem">
+    <p class="panel-lbl">node scrap_scripts/js/15_version_invariant.test.mjs</p>
+<pre><span class="ok">PASS</span>  VERSION file matches the sync stamp        "0.2.0" == "0.2.0"
+<span class="bad">FAIL</span>  sc-tts.js constant matches VERSION         expected "0.2.0", <span class="bad">got "0.1.0"</span>
+<span class="bad">FAIL</span>  vendored copy constant matches VERSION     expected "0.2.0", <span class="bad">got "0.1.0"</span>
+
+1/3 passed                                                          <span class="dim">exit 1</span></pre>
+  </div>
+
+  <div class="col stack" style="margin-top:1.4rem">
+    <p>Writing that test was the diagnosis, not the fix, and stopping there would have reproduced the
+      original failure one level up: a correct check nobody runs. The structural repair is to make
+      the drift unrepresentable by deriving the module's constant from the version file at load
+      time, so there is one source and nothing to disagree. Detection is what you build when
+      prevention is not available; here it was available.</p>
+  </div>
+</section>
+
+<hr class="div">
+
+<!-- ============================ 100 RULES ============================ -->
+<section>
+  <div class="col stack">
+    <p class="eyebrow">The number that does not mean what it says</p>
+    <h2>“100 game-ready rules,” none of which the game can run</h2>
+    <p>Content is the expensive part, so there is a database of 181 real sound changes with citations,
+      environments and trap ratings. A hundred of them carry a field holding the rule rewritten in
+      the token syntax the puzzle engine uses. The browser counts those and displays “100
+      game-ready.”</p>
+    <p>That field is read by exactly one thing, and it is not the game. Five reads, all inside the
+      database browser: render it, export it, filter on it, count it. The engine's rules are 23
+      hand-written functions and it has no parser for the syntax, so the number of database rules
+      playable today is <strong>zero</strong>. “Game-ready” describes the shape of a string, not a
+      capability. Written honestly it reads: <em>100 rules transcribed into a syntax nothing parses
+      yet.</em></p>
+    <div class="limit">
+      <b>What this does not show</b>
+      The transcription is lossy in a way the count also hides. The pen–pin merger conditions on
+      three nasals; the transcribed version covers two, silently dropping
+      <span class="ipa">ŋ</span>. A parser would make 100 rules loadable without making them
+      faithful, and I have not measured how many of the 100 lose something on the way in.
+    </div>
+  </div>
+</section>
+
+<hr class="div">
+
+<!-- ============================ COST ============================ -->
+<section>
+  <div class="col stack">
+    <p class="eyebrow">An assumption, audited</p>
+    <h2>The cost that never came down</h2>
+    <p>Turning a word into phonemes runs a speech engine compiled to WebAssembly. That engine is a
+      command-line program, so the wrapper starts a fresh instance for every word, and the note I
+      wrote at the time says this is “fine for a bench; flagged as a perf item if it ever feels
+      sluggish.” Assumptions like that usually survive on an unstated belief that repetition gets
+      cheaper. I went back and measured my own note.</p>
+  </div>
+
+  <div class="col-wide panel" style="margin-top:1.4rem">
+    <table class="data">
+      <caption>40 consecutive calls, ten words cycled four times. If instantiation were being
+        amortised, later calls would be faster than earlier ones.</caption>
+      <thead><tr><th>Window</th><th>n</th><th>Mean ms</th><th>SD</th></tr></thead>
+      <tbody>
+        <tr><td>Calls 1–10</td><td>10</td><td>147.7</td><td>9.3</td></tr>
+        <tr><td>Calls 11–30</td><td>20</td><td>156.2</td><td>4.7</td></tr>
+        <tr><td>Calls 31–40</td><td>10</td><td>151.4</td><td>3.3</td></tr>
+        <tr><td>All 40</td><td>40</td><td>152.9</td><td>6.8</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="col stack" style="margin-top:1.4rem">
+    <p>No amortisation. The last ten calls minus the first ten is +3.7&nbsp;ms with a standard error
+      of 3.1, a 95% interval of −2.4 to +9.8, so the difference is indistinguishable from noise in
+      either direction. The cost is one whole WebAssembly instantiation per word and it is paid again
+      every time. Phonemising the 139-word vocabulary for the study above took 20.3 seconds of wall
+      clock to produce a few hundred bytes of transcription. For a tool that speaks one line at a
+      time that is genuinely fine. For a game that wants to voice a lexicon as it drifts, it is a
+      redesign, and my note understated it.</p>
+    <div class="limit">
+      <b>What this does not show</b>
+      An earlier draft of this section claimed the last ten calls were slower than the first ten.
+      They were not, measurably; the interval above straddles zero and I have replaced the claim
+      with the interval. The middle twenty calls are in fact the slowest window of the three, which
+      no story about warm-up predicts and which 40 samples cannot explain.
+      <br><br>
+      Measured in Node on one machine, not in the browser where this actually runs, where the
+      compiled module is cached across instantiations and absolute times would likely be lower. What
+      transfers is the shape, not the number. One voice, one narrow word-length band.
+    </div>
+  </div>
+</section>
+
+<hr class="div">
+
+<!-- ============================ STATE ============================ -->
+<section>
+  <div class="col stack">
+    <p class="eyebrow">Where it actually is</p>
+    <h2>What is not built</h2>
+    <p>This is a JavaScript reference implementation with a solver, a verified generator, a 181-rule
+      content database and a working speech path. It is not a game anyone has played.</p>
+    <ul class="stack-tight small" style="padding-left:1.1rem">
+      <li><strong>The repository is local.</strong> Nothing on this page can be audited by a reader. Publishing it is the first item on the list and its absence is the fairest criticism anyone can make here.</li>
+      <li><strong>The port has not started.</strong> The target engine is Godot, a free game engine that would let this ship as a real downloadable build. Its project directory contains one empty placeholder file. This is the largest remaining piece.</li>
+      <li><strong>No player has touched it.</strong> Every claim on this page is about internal consistency, not about whether the puzzles are any good.</li>
+      <li><strong>The database is not wired to the engine</strong>, as above.</li>
+      <li><strong>The phoneme translation table is incomplete.</strong> When a second voice backend went in, all five demonstrable rules mapped with nothing unmapped, and I recorded that as coverage. Against every symbol the 181-rule database actually uses it covers 23 of 39, and 27 rules touch a symbol with no entry. Five rules was the sample.</li>
+      <li><strong>The speech engine is GPL-3.0</strong>, so shipping its binary in a public build pulls those obligations onto the build. That gate is logged and unresolved; the binary is deliberately not committed.</li>
+      <li><strong>The pitch document says “29 assertions green.”</strong> It is 41. The figure was written before a second assertion file existed and nobody updated it, which is the same drift the version check above also missed.</li>
+    </ul>
+  </div>
+</section>
+
+<footer>
+  <div class="col-wide foot-grid">
+    <p>Sounding Chamber · a puzzle game about historical sound change<br>
+      Figures measured 2026-09-09 · Windows 10 · Node v22.22.2<br>
+      Sound-change data cited to Labov, Ash &amp; Boberg 2006 and Wells 1982</p>
+    <p>Scripts behind the numbers, in a tree that is not public yet:<br>
+      <code>js/10_run_selftests.mjs</code><br>
+      <code>js/11_generator_study.mjs</code><br>
+      <code>js/13_spelling_vs_phonemic.mjs</code><br>
+      <code>js/14_espeak_cost.mjs</code><br>
+      <code>js/15_version_invariant.test.mjs</code><br>
+      <code>js/16_determinism_hashes.mjs</code><br>
+      <code>js/17_embedded_engine_parity.mjs</code><br>
+      <code>python/14_verify_arithmetic.py</code><br>
+      <code>python/15_espeak_series.py</code></p>
+  </div>
+</footer>
+
+</div>
+
+<script>
+/* The Level 1 engine, lifted from prototypes/src/js/sound-chamber.js.
+   Same lexicon, same six rule functions, same judge. The 41 assertions
+   quoted on this page are assertions about exactly this code. */
+(function(){
+  var LEXICON = [
+    {id:'bear',   spell:'bear',   ph:['b','e','a','r'],     role:'target'},
+    {id:'beer',   spell:'beer',   ph:['b','i','r'],         role:'target'},
+    {id:'pen',    spell:'pen',    ph:['p','e','n'],         role:'danger'},
+    {id:'pin',    spell:'pin',    ph:['p','i','n'],         role:'danger'},
+    {id:'bread',  spell:'bread',  ph:['b','r','e','a','d'], role:'danger'},
+    {id:'blood',  spell:'blood',  ph:['b','l','o','d'],     role:'danger'},
+    {id:'knight', spell:'knight', ph:['k','n','i','x','t'], role:'star'},
+    {id:'night',  spell:'night',  ph:['n','i','x','t'],     role:'star'},
+    {id:'king',   spell:'king',   ph:['k','i','n','g'],     role:''},
+    {id:'ale',    spell:'ale',    ph:['a','l','e'],         role:''}
+  ];
+  var RULES = {
+    smoothing:{name:'Smoothing', notation:'ea → e',
+      apply:function(ph){var o=[];for(var i=0;i<ph.length;i++){if(ph[i]==='e'&&ph[i+1]==='a'){o.push('e');i++;}else o.push(ph[i]);}return o;}},
+    raise_r:{name:'Pre-rhotic Raising', notation:'e → i / _r',
+      apply:function(ph){return ph.map(function(s,i){return (s==='e'&&ph[i+1]==='r')?'i':s;});}},
+    raise_all:{name:'The Great Raising', notation:'e → i',
+      apply:function(ph){return ph.map(function(s){return s==='e'?'i':s;});}},
+    kn_drop:{name:"Knife's Edge", notation:'k → ∅ / #_n',
+      apply:function(ph){return (ph[0]==='k'&&ph[1]==='n')?ph.slice(1):ph.slice();}},
+    x_loss:{name:'The Silent Hour', notation:'x → ∅',
+      apply:function(ph){return ph.filter(function(s){return s!=='x';});}},
+    devoice:{name:'Final Hardening', notation:'d → t / _#',
+      apply:function(ph){var o=ph.slice(); if(o[o.length-1]==='d') o[o.length-1]='t'; return o;}}
+  };
+  var HAND = ['smoothing','raise_r','raise_all','kn_drop','x_loss','devoice'];
+  var YEAR0 = 1200, PER = 25, TURNS = 6;
+  var DEFEAT = {
+    'pen|pin':'The royal scribe ordered a thousand pins. The army received a thousand pens. The siege did not go well.',
+    'bread|blood':'The rite of bread and the rite of blood became one rite. Theologians are still fighting about it.'
+  };
+  var PRESERVE = [['pen','pin'],['bread','blood']];
+
+  function pron(ph){ return ph.join(''); }
+  function clone(ws){ return ws.map(function(w){ var c={}; for(var k in w) c[k]=w[k]; c.ph=w.ph.slice(); return c; }); }
+  function find(ws,id){ for(var i=0;i<ws.length;i++) if(ws[i].id===id) return ws[i]; }
+  function same(ws,a,b){ return pron(find(ws,a).ph)===pron(find(ws,b).ph); }
+  function applyRule(ws,id){
+    var rule=RULES[id], next=[], changed=[];
+    for(var i=0;i<ws.length;i++){
+      var w=ws[i], np=rule.apply(w.ph);
+      if(pron(np)!==pron(w.ph)) changed.push({id:w.id, from:pron(w.ph), to:pron(np)});
+      var c={}; for(var k in w) c[k]=w[k]; c.ph=np; next.push(c);
+    }
+    return {next:next, changed:changed};
+  }
+  function judge(ws){
+    for(var i=0;i<PRESERVE.length;i++){
+      if(same(ws,PRESERVE[i][0],PRESERVE[i][1])) return {status:'lose', pair:PRESERVE[i]};
+    }
+    if(same(ws,'bear','beer')) return {status:'win', star:same(ws,'knight','night')};
+    return {status:'open', star:same(ws,'knight','night')};
+  }
+
+  var lexbody=document.getElementById('lexbody'), handEl=document.getElementById('hand'),
+      blog=document.getElementById('blog'), yrEl=document.getElementById('yr'),
+      turnsEl=document.getElementById('turns');
+  var state, left, history, over;
+
+  function log(html, cls){
+    var d=document.createElement('div');
+    if(cls) d.className=cls;
+    d.innerHTML=html;
+    blog.appendChild(d);
+    blog.scrollTop=blog.scrollHeight;
+  }
+
+  function tagFor(w,j){
+    if(w.id==='bear'||w.id==='beer')
+      return j.status==='win' ? '<span class="tag done">merged ✓</span>' : '<span class="tag merge">merge these</span>';
+    if(w.role==='danger') return '<span class="tag keep">keep distinct</span>';
+    if(w.role==='star')
+      return same(state,'knight','night') ? '<span class="tag done">bonus ✓</span>' : '<span class="tag star">bonus</span>';
+    return '';
+  }
+
+  function render(hot){
+    hot = hot || [];
+    var j = judge(state);
+    lexbody.innerHTML = state.map(function(w){
+      return '<tr'+(hot.indexOf(w.id)>-1?' data-hot="1"':'')+'>'+
+             '<td class="w">'+w.spell+'</td><td class="p">/'+pron(w.ph)+'/</td>'+
+             '<td>'+tagFor(w,j)+'</td></tr>';
+    }).join('');
+    handEl.innerHTML = HAND.map(function(id){
+      var r=RULES[id], n=applyRule(state,id).changed.length;
+      return '<button class="card" type="button" data-rule="'+id+'"'+(over?' disabled':'')+
+             ' aria-label="'+r.name+', '+r.notation+'. Would move '+n+' word'+(n===1?'':'s')+' right now.">'+
+             '<span class="cn">'+r.name+'</span>'+
+             '<span class="cnot">'+r.notation+'</span>'+
+             '<span class="cprev">would move <b>'+n+'</b> word'+(n===1?'':'s')+'</span></button>';
+    }).join('');
+    Array.prototype.forEach.call(handEl.querySelectorAll('button'), function(b){
+      b.addEventListener('click', function(){ play(b.getAttribute('data-rule')); });
+    });
+    turnsEl.textContent = left;
+    yrEl.textContent = YEAR0 + (TURNS-left)*PER;
+  }
+
+  function play(id){
+    if(over || left<=0) return;
+    history.push({state:clone(state), left:left});
+    var r=applyRule(state,id);
+    state=r.next; left--;
+    var rule=RULES[id];
+    if(r.changed.length===0){
+      log('<b>'+rule.name+':</b> 0 words moved. No sound stands in its environment — but the generation passes.');
+    } else {
+      log('<b>'+rule.name+':</b> '+r.changed.length+' moved — '+
+          r.changed.map(function(c){return c.id+' /'+c.from+'/→/'+c.to+'/';}).join(' · '));
+    }
+    var j=judge(state);
+    if(j.status==='lose'){
+      over=true;
+      log('<span class="bad">Forbidden merger: '+j.pair[0]+' = '+j.pair[1]+'.</span> '+(DEFEAT[j.pair.join('|')]||''));
+    } else if(j.status==='win'){
+      over=true;
+      var yr=YEAR0+(TURNS-left)*PER;
+      log('<span class="good">Prophecy merged: bear = beer.</span> <span class="gold">In the year '+yr+
+          ', a barrel fell from the brewer’s cart. The king, regrettably, was slain by a beer. He got better.</span>'+
+          (j.star?' <span class="good">★ Bonus: knight = night.</span>':''));
+    } else if(left===0){
+      over=true;
+      log('<span class="bad">The deadline arrives. The prophecy resolves as written. Exit, pursued by a bear.</span>');
+    }
+    render(r.changed.map(function(c){return c.id;}));
+  }
+
+  function undo(){
+    var p=history.pop();
+    if(!p) return;
+    state=p.state; left=p.left; over=false;
+    log('⟲ A generation rewinds. The language forgets.');
+    render();
+  }
+
+  function init(){
+    state=clone(LEXICON); left=TURNS; history=[]; over=false;
+    blog.innerHTML='';
+    log('The chamber is quiet. The prophecy waits. Play a rule.');
+    render();
+  }
+
+  document.getElementById('undo').addEventListener('click', undo);
+  document.getElementById('reset').addEventListener('click', init);
+  init();
+})();
+</script>

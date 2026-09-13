@@ -1,0 +1,864 @@
+<title>GenAI as the Mutation Operator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap">
+
+<style>
+:root {
+  --ground:      #0b0e18;
+  --surface:     #141a29;
+  --surface-2:   #1b2233;
+  --line:        #26324a;
+  --line-soft:   #1d2637;
+  --text:        #dfe5f2;
+  --text-dim:    #96a2bd;
+  --text-faint:  #6b7691;
+  --accent:      #9b6cf0;
+  --accent-soft: #3a2a63;
+  --team-a:      #4a90d9;
+  --team-b:      #d2523f;
+  --signal:      #e0a33a;
+  --good:        #4fbf8b;
+  --shadow:      0 18px 40px -24px rgba(0,0,0,.85);
+  --f-display: "Chakra Petch", "Segoe UI Semibold", system-ui, sans-serif;
+  --f-body:    "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  --f-mono:    "IBM Plex Mono", ui-monospace, "Cascadia Mono", monospace;
+  --measure: 34rem;
+  --pad:  clamp(1.15rem, 4vw, 2.6rem);
+  color-scheme: dark;
+}
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    --ground: #eef0f6; --surface: #ffffff; --surface-2: #f5f6fb;
+    --line: #d5dae7; --line-soft: #e3e7f0;
+    --text: #151b2b; --text-dim: #545e78; --text-faint: #7c86a0;
+    --accent: #6636c9; --accent-soft: #e6dcfb;
+    --team-a: #2a6cb5; --team-b: #b23c2b; --signal: #8d5f0c; --good: #1d6e4c;
+    --shadow: 0 16px 34px -26px rgba(20,26,44,.5);
+    color-scheme: light;
+  }
+}
+:root[data-theme="light"] {
+  --ground: #eef0f6; --surface: #ffffff; --surface-2: #f5f6fb;
+  --line: #d5dae7; --line-soft: #e3e7f0;
+  --text: #151b2b; --text-dim: #545e78; --text-faint: #7c86a0;
+  --accent: #6636c9; --accent-soft: #e6dcfb;
+  --team-a: #2a6cb5; --team-b: #b23c2b; --signal: #8d5f0c; --good: #1d6e4c;
+  --shadow: 0 16px 34px -26px rgba(20,26,44,.5);
+  color-scheme: light;
+}
+
+* { box-sizing: border-box; }
+body { background: var(--ground); color: var(--text); font-family: var(--f-body);
+  font-size: 16.5px; line-height: 1.62; -webkit-font-smoothing: antialiased; }
+.wrap { max-width: 74rem; margin: 0 auto; padding: 0 var(--pad); }
+h1, h2, h3, h4 { font-family: var(--f-display); text-wrap: balance; margin: 0; line-height: 1.14; }
+.eyebrow { font-family: var(--f-mono); font-size: .705rem; letter-spacing: .16em;
+  text-transform: uppercase; color: var(--text-faint); margin: 0; }
+p { margin: 0; }
+a { color: var(--accent); text-underline-offset: .18em; }
+a:focus-visible, .repo:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+/* Hero */
+.hero { border-bottom: 1px solid var(--line-soft);
+  background: radial-gradient(120% 90% at 78% 0%, var(--accent-soft) 0%, transparent 58%), var(--ground); }
+.hero-inner { display: grid; gap: clamp(1.8rem, 4vw, 3rem);
+  padding: clamp(2rem, 5vw, 3.4rem) 0 clamp(1.9rem, 4vw, 2.8rem); grid-template-columns: 1fr; }
+@media (min-width: 62rem) { .hero-inner { grid-template-columns: minmax(0, 27rem) minmax(0, 1fr); align-items: center; } }
+.mark-row { display: flex; align-items: center; gap: .8rem; margin-bottom: 1.4rem; }
+.mark-row .name { font-family: var(--f-mono); font-size: .8rem; letter-spacing: .13em;
+  text-transform: uppercase; color: var(--text-dim); }
+h1 { font-size: clamp(2.2rem, 5.8vw, 3.5rem); font-weight: 700; letter-spacing: -.015em; }
+h1 .thin { display: block; font-weight: 500; color: var(--accent); }
+.lede { margin-top: 1.1rem; max-width: 30rem; font-size: 1.06rem; color: var(--text-dim); }
+.repo { display: inline-flex; align-items: center; gap: .5rem; margin-top: 1.25rem;
+  font-family: var(--f-mono); font-size: .8rem; color: var(--text); text-decoration: none;
+  border: 1px solid var(--line); background: var(--surface); padding: .5rem .8rem; }
+.repo:hover { border-color: var(--accent); }
+.repo span.at { color: var(--text-faint); }
+.facts { margin-top: 1.7rem; display: grid; grid-template-columns: repeat(2, minmax(0,1fr));
+  gap: 1px; background: var(--line-soft); border: 1px solid var(--line-soft); }
+@media (min-width: 34rem) { .facts { grid-template-columns: repeat(4, minmax(0,1fr)); } }
+.fact { background: var(--ground); padding: .8rem .9rem; }
+.fact b { display: block; font-family: var(--f-display); font-size: 1.3rem; font-weight: 600;
+  font-variant-numeric: tabular-nums; letter-spacing: -.01em; }
+.fact span { font-family: var(--f-mono); font-size: .64rem; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--text-faint); }
+.cover { border: 1px solid var(--line); background: #0b0e18; box-shadow: var(--shadow); overflow: hidden; }
+.cover svg { display: block; width: 100%; height: auto; }
+.cover figcaption { font-family: var(--f-mono); font-size: .68rem; letter-spacing: .06em;
+  color: var(--text-faint); padding: .55rem .8rem; border-top: 1px solid var(--line);
+  background: var(--surface); display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+
+/* Sections */
+section { padding: clamp(2.5rem, 5.5vw, 4.2rem) 0; }
+section + section { border-top: 1px solid var(--line-soft); }
+.head { margin-bottom: 1.9rem; }
+.head h2 { font-size: clamp(1.5rem, 3.3vw, 2rem); font-weight: 600; margin-top: .5rem; letter-spacing: -.01em; }
+.head p { color: var(--text-dim); max-width: var(--measure); margin-top: .7rem; }
+.prose { max-width: var(--measure); display: grid; gap: 1.05rem; }
+.prose p { color: var(--text-dim); }
+.prose strong { color: var(--text); font-weight: 600; }
+.two { display: grid; gap: clamp(1.6rem, 4vw, 2.8rem); align-items: start; }
+@media (min-width: 58rem) { .two { grid-template-columns: minmax(0,1fr) minmax(0,1fr); } }
+.stack { display: grid; gap: 1.1rem; }
+
+/* Tables */
+.scroller { overflow-x: auto; border: 1px solid var(--line); background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: .89rem; min-width: 30rem; }
+th, td { text-align: left; padding: .55rem .8rem; border-bottom: 1px solid var(--line-soft); }
+thead th { font-family: var(--f-mono); font-size: .63rem; letter-spacing: .11em; text-transform: uppercase;
+  color: var(--text-faint); font-weight: 500; background: var(--surface-2); }
+tbody tr:last-child td { border-bottom: 0; }
+td.k { font-family: var(--f-mono); font-size: .81rem; white-space: nowrap; }
+td.n { font-family: var(--f-mono); font-variant-numeric: tabular-nums; text-align: right; white-space: nowrap; }
+td.d { color: var(--text-dim); }
+.up { color: var(--good); } .down { color: var(--team-b); } .flat { color: var(--text-faint); }
+
+/* Code / artifacts */
+figure.art { margin: 0; border: 1px solid var(--line); background: var(--surface); }
+figure.art figcaption { font-family: var(--f-mono); font-size: .66rem; letter-spacing: .08em;
+  text-transform: uppercase; color: var(--text-faint); padding: .55rem .8rem;
+  border-bottom: 1px solid var(--line); background: var(--surface-2);
+  display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+pre { margin: 0; padding: .85rem .9rem; overflow-x: auto; font-family: var(--f-mono);
+  font-size: .755rem; line-height: 1.62; color: var(--text-dim); }
+pre b { color: var(--text); font-weight: 500; }
+pre .c { color: var(--text-faint); }
+pre .g { color: var(--good); }
+pre .r { color: var(--team-b); }
+pre .v { color: var(--accent); }
+
+/* Charts */
+.chart { border: 1px solid var(--line); background: var(--surface); padding: 1.15rem 1.25rem .95rem; }
+.chart h3 { font-size: 1rem; font-weight: 600; margin-bottom: .9rem; }
+.chart svg { display: block; width: 100%; height: auto; }
+.chart-cap { font-family: var(--f-mono); font-size: .68rem; color: var(--text-faint);
+  margin-top: .85rem; padding-top: .65rem; border-top: 1px solid var(--line-soft); line-height: 1.55; }
+
+/* Callouts */
+.finding { border: 1px solid var(--line); border-left: 3px solid var(--signal);
+  background: var(--surface); padding: 1.1rem 1.25rem; display: grid; gap: .5rem; }
+.finding.bad { border-left-color: var(--team-b); }
+.finding.good { border-left-color: var(--good); }
+.finding h4 { font-size: .99rem; font-weight: 600; }
+.finding p { font-size: .92rem; color: var(--text-dim); }
+.pill-row { display: flex; flex-wrap: wrap; gap: .4rem; }
+.pill { font-family: var(--f-mono); font-size: .73rem; padding: .24rem .5rem;
+  border: 1px solid var(--line); color: var(--text-dim); background: var(--surface-2); }
+
+/* Numbered steps */
+.loop { display: grid; border: 1px solid var(--line); background: var(--surface); counter-reset: step; }
+.step { display: grid; grid-template-columns: 2.6rem 1fr; gap: .9rem;
+  padding: .9rem 1.05rem; border-bottom: 1px solid var(--line-soft); }
+.step:last-child { border-bottom: 0; }
+.step::before { counter-increment: step; content: counter(step, decimal-leading-zero);
+  font-family: var(--f-mono); font-size: .76rem; color: var(--accent); padding-top: .2rem; }
+.step h4 { font-size: .97rem; font-weight: 600; }
+.step p { font-size: .88rem; color: var(--text-dim); margin-top: .15rem; }
+
+/* Modes */
+.modes { display: grid; gap: 1.05rem; }
+@media (min-width: 52rem) { .modes { grid-template-columns: 1fr 1fr; } }
+.mode { border: 1px solid var(--line); background: var(--surface); padding: 1.2rem 1.25rem 1.35rem;
+  display: grid; gap: .7rem; align-content: start; }
+.mode-top { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; }
+.mode h3 { font-size: 1.13rem; font-weight: 600; }
+.tag { font-family: var(--f-mono); font-size: .63rem; letter-spacing: .09em; text-transform: uppercase;
+  padding: .18rem .42rem; border: 1px solid var(--line); color: var(--text-faint); white-space: nowrap; }
+.mode p { color: var(--text-dim); font-size: .93rem; }
+
+.nodes { display: grid; gap: .9rem; }
+@media (min-width: 46rem) { .nodes { grid-template-columns: repeat(3, 1fr); } }
+.nodegroup { border-top: 2px solid var(--accent); padding-top: .75rem; }
+.nodegroup h4 { font-size: .93rem; font-weight: 600; }
+.nodegroup p { font-size: .84rem; color: var(--text-faint); margin-top: .2rem; }
+.nodegroup ul { list-style: none; margin: .75rem 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: .3rem; }
+.nodegroup li { font-family: var(--f-mono); font-size: .75rem; padding: .18rem .42rem;
+  background: var(--surface-2); border: 1px solid var(--line-soft); color: var(--text-dim); }
+
+footer { border-top: 1px solid var(--line-soft); padding: 1.8rem 0 2.5rem; color: var(--text-faint);
+  font-size: .85rem; display: flex; flex-wrap: wrap; gap: .8rem 1.6rem; justify-content: space-between; align-items: center; }
+footer .mono { font-family: var(--f-mono); font-size: .72rem; letter-spacing: .05em; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .cover .pulse { animation: pulse 3.6s ease-in-out infinite; transform-origin: center; }
+  @keyframes pulse { 0%, 100% { opacity: .42; } 50% { opacity: .82; } }
+}
+</style>
+
+<header class="hero">
+  <div class="wrap hero-inner">
+    <div>
+      <div class="mark-row">
+        <svg width="40" height="40" viewBox="0 0 64 64" role="img" aria-label="AI-BT-Gym icon">
+          <rect x="1" y="1" width="62" height="62" rx="13" fill="var(--surface)" stroke="var(--line)" stroke-width="2"/>
+          <path d="M32 24 L32 34 M32 34 L19 34 L19 42 M32 34 L45 34 L45 42" fill="none" stroke="var(--text-dim)" stroke-width="2.4" stroke-linecap="square"/>
+          <circle cx="32" cy="19" r="8.5" fill="none" stroke="var(--accent)" stroke-width="2.6"/>
+          <circle cx="32" cy="19" r="3" fill="var(--accent)"/>
+          <rect x="13" y="42" width="12" height="10" fill="var(--team-a)"/>
+          <rect x="39" y="42" width="12" height="10" fill="var(--team-b)"/>
+        </svg>
+        <span class="name">AI-BT-Gym</span>
+      </div>
+
+      <h1>GenAI as the<span class="thin">Mutation Operator</span></h1>
+
+      <p class="lede">
+        One AI fighter lost every match it played, three seasons running. The logs said it
+        retreated 442 times per fight. Fixing that single habit moved it 350 rating points
+        in one generation, and made the other five worse.
+      </p>
+
+      <a class="repo" href="https://github.com/Spiffy-Panda/AI-BT-Gym">
+        <span class="at">github.com/</span>Spiffy-Panda/AI-BT-Gym
+      </a>
+
+      <div class="facts">
+        <div class="fact"><b>+350</b><span>Elo, one rewrite</span></div>
+        <div class="fact"><b>5,968</b><span>matches logged</span></div>
+        <div class="fact"><b>150</b><span>matches / 59 s</span></div>
+        <div class="fact"><b>6</b><span>ablations run</span></div>
+      </div>
+    </div>
+
+    <figure class="cover" style="margin:0">
+      <svg viewBox="0 0 1000 430" role="img" aria-label="Beacon Brawl arena: two blue pawns on the left holding a beacon, two red pawns on the right, a violet capture ring on a floating platform in the centre">
+        <rect width="1000" height="430" fill="#0b0e18"/>
+        <rect x="24" y="24" width="952" height="382" fill="none" stroke="#26324a" stroke-width="2"/>
+        <rect x="24" y="352" width="952" height="10" fill="#3a4763"/>
+        <rect x="228" y="348" width="150" height="6" fill="#d2523f" opacity=".75"/>
+        <rect x="622" y="348" width="150" height="6" fill="#d2523f" opacity=".75"/>
+        <rect x="438" y="252" width="124" height="9" fill="#3a4763"/>
+        <circle class="pulse" cx="250" cy="300" r="52" fill="#4a90d9" opacity=".16"/>
+        <circle cx="250" cy="300" r="52" fill="none" stroke="#4a90d9" stroke-width="2" stroke-dasharray="7 7"/>
+        <circle class="pulse" cx="500" cy="212" r="52" fill="#9b6cf0" opacity=".18"/>
+        <circle cx="500" cy="212" r="52" fill="none" stroke="#9b6cf0" stroke-width="2" stroke-dasharray="7 7"/>
+        <circle class="pulse" cx="750" cy="300" r="52" fill="#d2523f" opacity=".16"/>
+        <circle cx="750" cy="300" r="52" fill="none" stroke="#d2523f" stroke-width="2" stroke-dasharray="7 7"/>
+        <path d="M214 336 L446 258" stroke="#4a90d9" stroke-width="1.6" opacity=".8"/>
+        <rect x="440" y="250" width="10" height="10" fill="#4a90d9"/>
+        <path d="M792 330 L262 316" stroke="#d2523f" stroke-width="1.4" stroke-dasharray="3 9" opacity=".75"/>
+        <circle cx="214" cy="336" r="16" fill="#4a90d9"/><circle cx="214" cy="336" r="15" fill="none" stroke="#8dc0f0" stroke-width="1.5"/>
+        <circle cx="176" cy="336" r="16" fill="#4a90d9"/><circle cx="176" cy="336" r="15" fill="none" stroke="#8dc0f0" stroke-width="1.5"/>
+        <rect x="162" y="312" width="28" height="3" fill="#4fbf8b"/>
+        <rect x="200" y="312" width="28" height="3" fill="#4fbf8b"/>
+        <circle cx="792" cy="336" r="16" fill="#d2523f"/><circle cx="792" cy="336" r="15" fill="none" stroke="#f0a294" stroke-width="1.5"/>
+        <circle cx="830" cy="336" r="16" fill="#d2523f"/><circle cx="830" cy="336" r="15" fill="none" stroke="#f0a294" stroke-width="1.5"/>
+        <rect x="778" y="312" width="28" height="3" fill="#4fbf8b"/>
+        <rect x="816" y="312" width="19" height="3" fill="#e0a33a"/>
+        <path d="M488 232 h8 v-8 h8 v8 h8 v8 h-8 v8 h-8 v-8 h-8 z" fill="#4fbf8b" opacity=".9"/>
+        <text x="52" y="62" font-family="IBM Plex Mono, monospace" font-size="17" fill="#dfe5f2">TEAM A 6 (K:2)</text>
+        <text x="272" y="62" font-family="IBM Plex Mono, monospace" font-size="17" fill="#6b7691">|</text>
+        <text x="300" y="62" font-family="IBM Plex Mono, monospace" font-size="17" fill="#dfe5f2">TEAM B 6 (K:2)</text>
+        <text x="52" y="88" font-family="IBM Plex Mono, monospace" font-size="14" fill="#96a2bd">LEFT [A]&#160;&#160;CENTER 2x [–]&#160;&#160;RIGHT [B]</text>
+        <text x="800" y="62" font-family="IBM Plex Mono, monospace" font-size="15" fill="#4fbf8b">SYNC OK</text>
+        <text x="800" y="88" font-family="IBM Plex Mono, monospace" font-size="14" fill="#6b7691">t 628 / 8099</text>
+      </svg>
+      <figcaption><span>Beacon Brawl · gen_005 · seed 484109031</span><span>2000 × 800 · 60 Hz</span></figcaption>
+    </figure>
+  </div>
+</header>
+
+<main>
+
+<section>
+  <div class="wrap two">
+    <div>
+      <p class="eyebrow">Plain language first</p>
+      <div class="head" style="margin-bottom:1.2rem"><h2>What this actually is</h2></div>
+      <div class="prose">
+        <p>
+          A <strong>behavior tree</strong> is game AI written as a flowchart. A root node asks its
+          children, in order, whether they want to act this frame. Am I hurt? Then heal. Is the
+          enemy close? Then punch. Otherwise, walk toward them. The first branch that succeeds
+          wins the frame, and the rest never run.
+        </p>
+        <p>
+          The useful part is that the whole strategy is a file, not code. It saves as JSON, which
+          means a language model can be handed one, shown where it lost, and asked to rewrite the
+          branch responsible. <strong>Gym</strong> here means the place that answers the next question:
+          was the rewrite actually better?
+        </p>
+        <p>
+          Fighters play a full round-robin, everyone against everyone, and get rated with the same
+          maths chess uses. On that scale a <strong>100-point gap means the stronger side wins about
+          64 percent of the time</strong>, so it is a real gap but not a wall. The rest of this page is
+          what happened when that loop ran for eight generations.
+        </p>
+        <p>
+          One more word worth unpacking. <strong>Deterministic</strong> means the same starting seed
+          always produces the byte-identical fight. Not similar. Identical. That property is what
+          turns a replay into a test, and it is the thing most of this project's engineering protects.
+        </p>
+      </div>
+    </div>
+
+    <div class="stack">
+      <figure class="art">
+        <figcaption><span>The tree, as stored</span><span>JSON · trimmed</span></figcaption>
+<pre><span class="c">// one branch of Yellow_DiveKicker: strike while falling toward the enemy</span>
+{
+  <b>"type"</b>: <span class="v">"Sequence"</span>,
+  <b>"children"</b>: [
+    { <b>"type"</b>: <span class="v">"Condition"</span>, <b>"value"</b>: <span class="g">"is_grounded == 0"</span> },
+    { <b>"type"</b>: <span class="v">"Condition"</span>, <b>"value"</b>: <span class="g">"vel_y &gt; 0"</span> },
+    { <b>"type"</b>: <span class="v">"Condition"</span>, <b>"value"</b>: <span class="g">"distance_to_opponent &lt; 230"</span> },
+    { <b>"type"</b>: <span class="v">"Selector"</span>, <b>"children"</b>: [
+      { <b>"type"</b>: <span class="v">"Sequence"</span>, <b>"children"</b>: [
+        { <b>"type"</b>: <span class="v">"Condition"</span>, <b>"value"</b>: <span class="g">"left_retracted == 1"</span> },
+        { <b>"type"</b>: <span class="v">"Action"</span>,    <b>"value"</b>: <span class="r">"launch_left_at_opponent"</span> }
+      ]}
+    ]}
+  ]
+}</pre>
+      </figure>
+      <p class="prose" style="max-width:none"><em style="color:var(--text-faint);font-size:.86rem">
+        That is the entire representation. Nine node types, conditions as expression strings,
+        actions as names the world knows how to run. A model reads and writes this directly.
+      </em></p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="head">
+      <p class="eyebrow">The worked example</p>
+      <h2>Cyan lost thirty-five matches out of thirty-five</h2>
+      <p>This is the whole loop on one fighter, with the artifact from each stage. It is also
+        the generation where most of the field got worse, which is the more useful half of the result.</p>
+    </div>
+
+    <div class="two">
+      <div class="stack">
+        <div class="finding bad">
+          <h4>Stage one, the symptom</h4>
+          <p>Cyan_ZoneController finished generation two on a 0–35 record at 717 rating,
+            the worst in the project's history. Its predecessor generations were 2–33 and 3–32.
+            Losing is not itself informative. The logs had to say why.</p>
+        </div>
+        <div class="finding">
+          <h4>Stage two, the diagnosis</h4>
+          <p>Action counts are recorded per match. Cyan issued <strong>442 retreat actions per
+            fight</strong>. Red, the next worst, issued 183. Cyan was not being outfought. It was
+            running away from every engagement it started, then losing on the clock and on chip damage.</p>
+        </div>
+        <div class="finding good">
+          <h4>Stage three, the rewrite</h4>
+          <p>Retreat was removed everywhere except inside 80 units. Anchor locking dropped to a
+            chain length of 90 so it would create swing points more often. Zone shots now fire
+            from the anchor instead of from a safe distance. Dive release was added on descent
+            above 50 units per second.</p>
+        </div>
+      </div>
+
+      <div class="stack">
+        <div class="chart">
+          <h3>Cyan_ZoneController rating, generations 0 to 7</h3>
+          <svg viewBox="0 0 470 238" role="img" aria-label="Line chart of Cyan's rating: 758, 782, 717, then a jump to 1068 at generation 3, then 1049, 946, 934, 912.">
+            <g font-family="IBM Plex Mono, monospace" font-size="9.5" fill="var(--text-faint)">
+              <text x="0" y="19">1100</text><text x="0" y="62">1000</text>
+              <text x="0" y="106">900</text><text x="0" y="149">800</text><text x="0" y="193">700</text>
+            </g>
+            <g stroke="var(--line-soft)" stroke-width="1">
+              <path d="M40 16 H462"/><path d="M40 59 H462"/><path d="M40 103 H462"/>
+              <path d="M40 146 H462"/><path d="M40 190 H462"/>
+            </g>
+            <path d="M44 164.6 L99 154.5 L154 182.6 L209 30.1 L264 38 L319 82.9 L374 88.4 L429 97.7"
+                  fill="none" stroke="var(--accent)" stroke-width="2.4"/>
+            <path d="M154 182.6 L209 30.1" fill="none" stroke="var(--good)" stroke-width="3.4"/>
+            <g fill="var(--accent)">
+              <circle cx="44" cy="164.6" r="3.4"/><circle cx="99" cy="154.5" r="3.4"/>
+              <circle cx="154" cy="182.6" r="4.6" fill="var(--team-b)"/>
+              <circle cx="209" cy="30.1" r="4.6" fill="var(--good)"/>
+              <circle cx="264" cy="38" r="3.4"/><circle cx="319" cy="82.9" r="3.4"/>
+              <circle cx="374" cy="88.4" r="3.4"/><circle cx="429" cy="97.7" r="3.4"/>
+            </g>
+            <g font-family="IBM Plex Mono, monospace" font-size="10" fill="var(--text)">
+              <text x="154" y="200" text-anchor="middle" fill="var(--team-b)">717</text>
+              <text x="209" y="22" text-anchor="middle" fill="var(--good)">1068</text>
+            </g>
+            <g font-family="IBM Plex Mono, monospace" font-size="9.5" fill="var(--text-faint)" text-anchor="middle">
+              <text x="44" y="216">g0</text><text x="99" y="216">g1</text><text x="154" y="216">g2</text>
+              <text x="209" y="216">g3</text><text x="264" y="216">g4</text><text x="319" y="216">g5</text>
+              <text x="374" y="216">g6</text><text x="429" y="216">g7</text>
+            </g>
+            <text x="209" y="232" text-anchor="middle" font-family="IBM Plex Sans, sans-serif"
+                  font-size="10" fill="var(--good)">the rewrite lands here</text>
+          </svg>
+          <p class="chart-cap">Record went 0–35 to 22–13. The gain then decayed over four
+            generations as the rest of the field adapted, ending 200 points below the peak.</p>
+        </div>
+
+        <div class="scroller">
+          <table>
+            <caption style="caption-side:top;text-align:left;font-family:var(--f-mono);font-size:.63rem;letter-spacing:.11em;text-transform:uppercase;color:var(--text-faint);padding:.55rem .8rem;background:var(--surface-2);border-bottom:1px solid var(--line)">Same generation, whole field</caption>
+            <thead>
+              <tr><th scope="col">Fighter</th><th scope="col">g2 → g3</th><th scope="col">Record</th><th scope="col">Delta</th></tr>
+            </thead>
+            <tbody>
+              <tr><td class="k">Cyan_ZoneController</td><td class="n">717 → 1068</td><td class="n">0–35 → 22–13</td><td class="n up">+350.4</td></tr>
+              <tr><td class="k">Blue_SwingShotgun</td><td class="n">1173 → 1155</td><td class="n">30–5 → 27–7</td><td class="n down">−18.4</td></tr>
+              <tr><td class="k">Red_CounterStriker</td><td class="n">973 → 912</td><td class="n">16–19 → 11–24</td><td class="n down">−61.8</td></tr>
+              <tr><td class="k">Yellow_DiveKicker</td><td class="n">1012 → 928</td><td class="n">18–15 → 13–20</td><td class="n down">−84.0</td></tr>
+              <tr><td class="k">Magenta_SwingSniper</td><td class="n">1095 → 1004</td><td class="n">21–12 → 18–16</td><td class="n down">−90.6</td></tr>
+              <tr><td class="k">Green_GrappleAssassin</td><td class="n">1030 → 935</td><td class="n">18–17 → 11–22</td><td class="n down">−95.6</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="two" style="margin-top:1.8rem">
+      <figure class="art">
+        <figcaption><span>What the model is handed</span><span>scouting_report_prompt.md</span></figcaption>
+<pre><span class="c"># Scouting Report — Yellow_DiveKicker (fighter_04)</span>
+<span class="c">## Gen 0 | Elo 747.6 | Record 5W-30L-0D</span>
+
+Aggregate metrics:
+- Avg damage dealt: <b>50.4</b>      - Avg received: <b>101.8</b>
+- Avg hit accuracy: <b>20.1%</b>     - Time grounded: <b>2.4%</b>
+
+Its behavior tree structure is:
+&lt;tree&gt; <span class="c">... full JSON ...</span> &lt;/tree&gt;
+
+Battle log summaries (7 representative matches):
+&lt;logs&gt; <span class="c">... per-match action counts, phase breakdown,</span>
+       <span class="c">grapple stats, positional summary ...</span> &lt;/logs&gt;
+
+Write a scouting report covering:
+1. <b>Chain-fist management</b> — does it waste fists or leave
+   itself vulnerable with both extending?
+<span class="c">...</span>
+6. <b>Suggested fix</b> — one concrete change to the tree that
+   would address the single biggest weakness.
+
+Keep the report under 300 words.</pre>
+      </figure>
+
+      <div class="prose">
+        <p class="eyebrow">Why the prompt looks like that</p>
+        <p>
+          The tree alone is not enough context and the raw replay is far too much. What works is
+          the tree plus roughly seven representative matches, each compressed to counts rather
+          than events: how often each action fired, damage split across early, middle and late
+          phases, grapple attach counts and durations, and where on the map it spent its time.
+        </p>
+        <p>
+          Asking for <strong>one concrete change</strong> rather than a rewrite is deliberate. An
+          unconstrained rewrite changes many things at once and the next tournament cannot tell you
+          which one mattered. Generation three is the cautionary case: several fighters got more
+          than one edit, five of six regressed, and the per-fighter cause is still ambiguous.
+        </p>
+        <p>
+          The loop was driven by <strong>Claude Opus 4.6</strong>, with the diagnosis, the tree edits and
+          the written change log all produced from these prompts. Every generation's reasoning is
+          committed alongside the trees it produced, so a claim like <em>grapple volume is the meta</em>
+          can be checked against the tournament that followed it.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="head">
+      <p class="eyebrow">The controlled experiment</p>
+      <h2>What is one piece of map knowledge worth?</h2>
+      <p>Two identical teams. One has the subtree for a map feature, the other does not.
+        Ten games per pairing, sides alternated each game to cancel spawn advantage,
+        seeds fixed at 100 through 109. These numbers are from a run on 9 September 2026.</p>
+    </div>
+
+    <div class="two">
+      <div class="chart">
+        <h3>Win rate for the informed team</h3>
+        <svg viewBox="0 0 470 256" role="img" aria-label="Bar chart of informed-team win rates: hazard awareness 100 percent on two maps, full map awareness 100 percent, pickup awareness 80 percent on two maps, wall awareness 50 percent.">
+          <g stroke="var(--line-soft)" stroke-width="1">
+            <path d="M188 8 V236"/><path d="M258 8 V236"/><path d="M328 8 V236"/><path d="M398 8 V236"/><path d="M468 8 V236"/>
+          </g>
+          <g font-family="IBM Plex Mono, monospace" font-size="9" fill="var(--text-faint)" text-anchor="middle">
+            <text x="188" y="250">0%</text><text x="258" y="250">25</text><text x="328" y="250">50</text>
+            <text x="398" y="250">75</text><text x="468" y="250">100</text>
+          </g>
+          <path d="M328 8 V236" stroke="var(--text-faint)" stroke-width="1" stroke-dasharray="3 4"/>
+
+          <g font-family="IBM Plex Sans, sans-serif" font-size="10.5" fill="var(--text-dim)">
+            <text x="0" y="27">Hazard awareness</text>
+            <text x="0" y="63">Hazard awareness</text>
+            <text x="0" y="99">All map knowledge</text>
+            <text x="0" y="135">Pickup awareness</text>
+            <text x="0" y="171">Pickup awareness</text>
+            <text x="0" y="207">Wall awareness</text>
+          </g>
+          <g font-family="IBM Plex Mono, monospace" font-size="8.5" fill="var(--text-faint)">
+            <text x="0" y="39">on Hazards</text><text x="0" y="75">on Combined</text>
+            <text x="0" y="111">on Combined</text><text x="0" y="147">on Pickups</text>
+            <text x="0" y="183">on Combined</text><text x="0" y="219">on CenterWall</text>
+          </g>
+
+          <rect x="188" y="16" width="280" height="20" fill="var(--good)"/>
+          <rect x="188" y="52" width="280" height="20" fill="var(--good)"/>
+          <rect x="188" y="88" width="280" height="20" fill="var(--good)"/>
+          <rect x="188" y="124" width="224" height="20" fill="var(--accent)"/>
+          <rect x="188" y="160" width="224" height="20" fill="var(--accent)"/>
+          <rect x="188" y="196" width="140" height="20" fill="var(--text-faint)"/>
+
+          <g font-family="IBM Plex Mono, monospace" font-size="10" fill="var(--ground)" text-anchor="end">
+            <text x="462" y="30">10/10</text><text x="462" y="66">10/10</text><text x="462" y="102">10/10</text>
+            <text x="406" y="138">8/10</text><text x="406" y="174">8/10</text><text x="322" y="210">5/10</text>
+          </g>
+        </svg>
+        <p class="chart-cap">Ten games per row. At that sample a 10–0 result is unlikely by
+          chance, roughly one run in a thousand, while the 5–4–1 row is exactly what a coin does.
+          Treat the two 8/10 rows as suggestive, not settled.</p>
+      </div>
+
+      <div class="stack">
+        <div class="scroller">
+          <table>
+            <thead>
+              <tr><th scope="col">Knowledge withheld</th><th scope="col">Map</th><th scope="col">Score, informed</th><th scope="col">Score, blind</th></tr>
+            </thead>
+            <tbody>
+              <tr><td class="k">All of it</td><td class="k">Combined</td><td class="n up">151</td><td class="n">37</td></tr>
+              <tr><td class="k">Hazards</td><td class="k">Combined</td><td class="n up">151</td><td class="n">35</td></tr>
+              <tr><td class="k">Pickups</td><td class="k">Combined</td><td class="n up">138</td><td class="n">82</td></tr>
+              <tr><td class="k">Pickups</td><td class="k">Pickups</td><td class="n up">144</td><td class="n">97</td></tr>
+              <tr><td class="k">Hazards</td><td class="k">Hazards</td><td class="n">130</td><td class="n">126</td></tr>
+              <tr><td class="k">Walls</td><td class="k">CenterWall</td><td class="n flat">119</td><td class="n flat">119</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="finding">
+          <h4>The two rows that teach the most are the boring ones</h4>
+          <p>
+            Wall awareness is worth nothing. Five wins, four losses, one draw, and average scores
+            identical to the point. The subtree runs, the fighters break the wall, and it does not
+            change who wins. That is a feature built and then measured into the bin.
+          </p>
+          <p>
+            Hazard awareness on the hazard map wins every game but only by four points of score,
+            while the same subtree on the combined map wins by 116. The knowledge is nearly
+            worthless alone and decisive in combination, which is not what anyone predicted going in.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="head">
+      <p class="eyebrow">The season that broke</p>
+      <h2>Half of all matches ended in a draw</h2>
+      <p>An earlier Beacon Brawl season posted records like 15 wins, 0 losses, 30 draws.
+        The cause was geometry, and the behaviour logs had been saying so for three generations.</p>
+    </div>
+
+    <div class="two">
+      <div class="chart">
+        <h3>Draw rate by generation</h3>
+        <svg viewBox="0 0 470 210" role="img" aria-label="Bar chart of draw rate falling from 54 percent in generation 0 to 4 percent in generation 3 and near zero after.">
+          <g stroke="var(--line-soft)" stroke-width="1">
+            <path d="M34 20 H466"/><path d="M34 62 H466"/><path d="M34 104 H466"/><path d="M34 146 H466"/><path d="M34 166 H466"/>
+          </g>
+          <g font-family="IBM Plex Mono, monospace" font-size="9.5" fill="var(--text-faint)">
+            <text x="0" y="23">60%</text><text x="0" y="65">45</text><text x="0" y="107">30</text><text x="0" y="149">15</text><text x="0" y="169">0</text>
+          </g>
+          <!-- y = 166 - pct*2.433 -->
+          <rect x="44" y="34.1" width="38" height="131.9" fill="var(--team-b)"/>
+          <rect x="97" y="37.3" width="38" height="128.7" fill="var(--team-b)"/>
+          <rect x="150" y="42.7" width="38" height="123.3" fill="var(--team-b)"/>
+          <rect x="203" y="155.3" width="38" height="10.7" fill="var(--good)"/>
+          <rect x="256" y="155.3" width="38" height="10.7" fill="var(--good)"/>
+          <rect x="309" y="164.5" width="38" height="1.5" fill="var(--good)"/>
+          <rect x="362" y="159.5" width="38" height="6.5" fill="var(--good)"/>
+          <rect x="415" y="164.5" width="38" height="1.5" fill="var(--good)"/>
+          <g font-family="IBM Plex Mono, monospace" font-size="9.5" fill="var(--text)" text-anchor="middle">
+            <text x="63" y="29">54</text><text x="116" y="32">53</text><text x="169" y="37">51</text>
+            <text x="222" y="150">4.4</text><text x="275" y="150">4.4</text><text x="328" y="159">0</text>
+            <text x="381" y="154">2.7</text><text x="434" y="159">0</text>
+          </g>
+          <g font-family="IBM Plex Mono, monospace" font-size="9.5" fill="var(--text-faint)" text-anchor="middle">
+            <text x="63" y="182">g0</text><text x="116" y="182">g1</text><text x="169" y="182">g2</text><text x="222" y="182">g3</text>
+            <text x="275" y="182">g4</text><text x="328" y="182">g5</text><text x="381" y="182">g6</text><text x="434" y="182">g7</text>
+          </g>
+          <path d="M196 20 V190" stroke="var(--signal)" stroke-width="1" stroke-dasharray="4 4"/>
+          <text x="200" y="200" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="var(--signal)">platform lowered into hook range</text>
+        </svg>
+        <p class="chart-cap">225 matches per generation. Average match length fell from 1,901
+          ticks to 1,277 in the same step, because matches started ending on score instead of the clock.</p>
+      </div>
+
+      <div class="stack">
+        <div class="prose" style="max-width:none">
+          <p class="eyebrow">What the behaviour logs were saying</p>
+          <p>
+            The centre beacon is worth double and sits on a floating platform. The platform was
+            placed higher than a jump plus a grapple hook could carry a pawn, so nobody could ever
+            take it. Both teams held one side beacon each, neither could break the tie, and the
+            clock ran out. Over half of every season.
+          </p>
+          <p>
+            The evidence was in the logs the whole time. Across 360 recorded team-matches, all four
+            teams spent <strong>91 to 92 percent of the match standing on the ground</strong> and
+            8 to 9 percent on the platform. Movement accounted for roughly 99 percent of every
+            action issued. Shooting a pistol was 0.8 percent. Firing the rifle was 0.5 percent.
+            Using the hook at all was 0.4 percent.
+          </p>
+          <p>
+            Nobody reads that as a level-design bug until they go looking. The win-loss record
+            hides it completely, because a symmetric stalemate looks like a balanced game.
+          </p>
+        </div>
+
+        <div class="pill-row">
+          <span class="pill">grounded 91.5%</span>
+          <span class="pill">on platform 8.5%</span>
+          <span class="pill">movement 99% of actions</span>
+          <span class="pill">pistol 0.8%</span>
+          <span class="pill">rifle 0.5%</span>
+          <span class="pill">hook 0.4%</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="head">
+      <p class="eyebrow">The engineering that makes the rest possible</p>
+      <h2>A replay that disagrees with the game is a failing test</h2>
+      <p>Every claim above depends on a run being repeatable. Three mechanisms enforce that,
+        and one of them catches its own bugs.</p>
+    </div>
+
+    <div class="two">
+      <div class="stack">
+        <div class="loop">
+          <div class="step">
+            <div><h4>Fixed step, no engine in the loop</h4>
+              <p>Physics, combat and tree evaluation are plain C# at a fixed 60 Hz. No frame
+                timing, no engine calls in the hot path. The renderer only ever consumes a recording.</p></div>
+          </div>
+          <div class="step">
+            <div><h4>Every result carries its seed and a build hash</h4>
+              <p>Each generation writes its match seed and a SHA-256 of the compiled simulation.
+                Change the physics and the hash changes, which marks earlier standings as
+                belonging to a different game rather than a comparable one.</p></div>
+          </div>
+          <div class="step">
+            <div><h4>Playback re-runs the real simulation</h4>
+              <p>A replay stores a checkpoint every ten ticks plus the seed and both trees.
+                The viewer re-simulates and compares against the checkpoints as it plays,
+                so it can only display a pass when recording and live physics still agree.</p></div>
+          </div>
+        </div>
+
+        <div class="finding">
+          <h4>Seven bugs found, and only two were in the game</h4>
+          <p>
+            The other five were in recording. Damage, hook grabs and parries all worked in the
+            simulation and all logged as zero. That is the worse failure of the two, because a
+            silent metric turns the whole rewrite loop into guesswork. Checkpoint replay is what
+            settled it, by showing kills accumulating from shots the counter insisted had never
+            landed, at a rate of about one kill per thirty-three shots.
+          </p>
+        </div>
+      </div>
+
+      <div class="stack">
+        <figure class="art">
+          <figcaption><span>Run it yourself</span><span>full suite, one command</span></figcaption>
+<pre><span class="c"># build, then run every test and evaluation match headless</span>
+dotnet build
+Godot_console.exe --headless --scene res://scenes/test_runner.tscn
+
+<span class="c">──────────────────────────────────────────────</span>
+  Movement Tests
+<span class="c">──────────────────────────────────────────────</span>
+  <span class="g">[PASS]</span> PendulumSwing
+  <span class="g">[PASS]</span> GrapplePull
+  <span class="g">[PASS]</span> AirborneViaAlternatingGrapple
+  <span class="r">[FAIL]</span> SpiderManSwing: Expected &gt;500px horizontal
+         traversal via swing, got <b>215px</b>
+  Results: <b>8 passed, 1 failed</b>
+
+  Map Self-Play Tests        Results: <b>9 passed, 0 failed</b>
+  Informed vs Uninformed     60 matches
+  Head-to-Head breakdown     90 matches
+
+real    <b>0m59.086s</b></pre>
+        </figure>
+
+        <div class="prose" style="max-width:none">
+          <p class="eyebrow">The numbers a second engineer would ask for</p>
+          <p>
+            Build takes 4.7 seconds. The full suite above runs <strong>150 evaluation matches in
+            59 seconds</strong> on one desktop core, engine startup included. Each match is up to 90
+            simulated seconds, so that is roughly 230 times real time, single threaded.
+          </p>
+          <p>
+            The failing test is left failing on purpose. Swing traversal reaches 215 pixels against
+            a 500 pixel target, which means chained pendulum movement does not yet work the way the
+            design assumes. It is a real gap in the movement model, and hiding it would remove the
+            only signal that it exists.
+          </p>
+          <p>
+            The honest gap is automation. Nothing runs this on commit. The build hash and the
+            checkpoint comparison are both capable of gating a merge, and neither is wired to one.
+            That is the next piece of work, not a solved problem.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="head">
+      <p class="eyebrow">Two arenas</p>
+      <h2>The same runtime in two different games</h2>
+      <p>Both hand the tree an identical interface: resolve a named variable, run a named action,
+        report the tick. That three-method contract is the entire coupling between strategy and world.</p>
+    </div>
+
+    <div class="modes">
+      <article class="mode">
+        <div class="mode-top"><h3>Dueling Fighters</h3><span class="tag">1 v 1</span></div>
+        <p>A side-on brawl whose only verb is a fist launched on a chain. The chain can extend,
+          lock at length, stick to a surface and reel in. Punching, wall-jumping, swinging and
+          hammering are all the same mechanic held in different states, which is why a tree can
+          invent tactics without new actions being written for it.</p>
+        <div class="scroller" style="border:0">
+          <table style="min-width:22rem">
+            <tbody>
+              <tr><td class="k">Punch</td><td class="d">extending, free</td></tr>
+              <tr><td class="k">Wall jump</td><td class="d">retracting, stuck</td></tr>
+              <tr><td class="k">Swing</td><td class="d">locked, stuck</td></tr>
+              <tr><td class="k">Hammer</td><td class="d">locked, free</td></tr>
+              <tr><td class="k">Parry</td><td class="d">locked, aimed — both fists forced home</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </article>
+
+      <article class="mode">
+        <div class="mode-top"><h3>Beacon Brawl</h3><span class="tag">2 v 2 · zones</span></div>
+        <p>Two roles per team. The Grappler keeps the chain and adds a point-blank grab that
+          leaves its target taking 50 percent extra damage for a second. The Gunner trades the
+          chain for a fast pistol and a slow rifle that bounces twice. Three beacon zones tick
+          score to whoever holds them, so position finally has a price.</p>
+        <div class="pill-row" style="margin-top:.3rem">
+          <span class="pill">first to 150</span>
+          <span class="pill">100 HP</span>
+          <span class="pill">3 s respawn</span>
+          <span class="pill">fist 8 / 0.25 s</span>
+          <span class="pill">pistol 6 / 0.5 s</span>
+          <span class="pill">rifle 18 / 1.5 s</span>
+          <span class="pill">hazard 30 dps</span>
+        </div>
+      </article>
+    </div>
+
+    <div style="margin-top:1.9rem">
+      <div class="nodes">
+        <div class="nodegroup">
+          <h4>Composites</h4><p>Route control between children.</p>
+          <ul><li>Sequence</li><li>Selector</li><li>Parallel</li></ul>
+        </div>
+        <div class="nodegroup">
+          <h4>Decorators</h4><p>Wrap one child, change when it runs.</p>
+          <ul><li>Inverter</li><li>Repeater</li><li>Cooldown</li><li>ConditionGate</li></ul>
+        </div>
+        <div class="nodegroup">
+          <h4>Leaves</h4><p>Ask the world, or tell it to act.</p>
+          <ul><li>Condition</li><li>Action</li></ul>
+        </div>
+      </div>
+      <p class="prose" style="max-width:none;margin-top:1.1rem;font-size:.92rem">
+        Conditions are stored as expression strings, which suits a model writing JSON and does not
+        suit anyone writing trees by hand. A specification layer resolves that: typed variable
+        references build the identical string when the tree is constructed, so hand-authored trees
+        get autocomplete and the per-tick path still evaluates a plain string. The variable set
+        covers self, opponent, arena geometry, volatile state such as standing in a hazard, and
+        objective state such as capture progress.
+      </p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="head">
+      <p class="eyebrow">Limits</p>
+      <h2>What this does not show</h2>
+      <p>Stated plainly, because most of these are visible in the data above if you look for them.</p>
+    </div>
+    <div class="two">
+      <div class="stack">
+        <div class="finding bad">
+          <h4>Thirty matches is not enough to rank four teams</h4>
+          <p>In the current Beacon Brawl series the rank order changes almost every generation and
+            the whole field sits inside 60 rating points. One team went 1099, 1102, 1169, 1011, 906,
+            972 across six generations without its tree changing character. That is churn, not
+            learning, and the sample is too small to claim otherwise.</p>
+        </div>
+        <div class="finding bad">
+          <h4>The rewrite loop is one model and one author</h4>
+          <p>There is no baseline to compare it against. Nobody ran random mutation, or a second
+            model, or a human-only control on the same generations, so the honest claim is that
+            targeted rewrites moved one fighter 350 points, not that this method beats alternatives.</p>
+        </div>
+      </div>
+      <div class="stack">
+        <div class="finding bad">
+          <h4>Generation three regressed five fighters out of six</h4>
+          <p>Multiple edits per fighter in a single generation makes attribution impossible.
+            The fix is one change per fighter per generation, which costs more tournament runs
+            and has not been done yet.</p>
+        </div>
+        <div class="finding bad">
+          <h4>Determinism is verified on one machine</h4>
+          <p>The build hash guards against changed physics, not against a different floating-point
+            environment. Cross-machine determinism is untested, and nothing runs the checkpoint
+            comparison automatically on commit.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="head"><p class="eyebrow">Stack</p><h2>What it is made of</h2></div>
+    <div class="scroller">
+      <table>
+        <thead><tr><th scope="col">Layer</th><th scope="col">Built with</th><th scope="col">Notes</th></tr></thead>
+        <tbody>
+          <tr><td class="k">Simulation</td><td class="d">C# on .NET, no engine calls in the hot path</td><td class="d">Fixed 60 Hz, deterministic, batch-friendly</td></tr>
+          <tr><td class="k">Tree runtime</td><td class="d">C# records, System.Text.Json</td><td class="d">Nine node types behind a three-method context</td></tr>
+          <tr><td class="k">Renderer</td><td class="d">Godot 4.6.1 mono</td><td class="d">Replay consumer with scrub, overlays, live sync check</td></tr>
+          <tr><td class="k">Server</td><td class="d">C# HTTP listener inside headless Godot</td><td class="d">Dashboard, replay launcher, test runner, tree diff, screenshots</td></tr>
+          <tr><td class="k">Analysis</td><td class="d">Python</td><td class="d">Battle dumps, fist usage, scouting-report generation</td></tr>
+          <tr><td class="k">Rewrite loop</td><td class="d">Claude Opus 4.6</td><td class="d">Diagnosis, tree edits and change logs, committed per generation</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="wrap">
+  <span>AI-BT-Gym — behavior trees, evolved by argument. Built by Spiffy-Panda.
+    <a href="https://github.com/Spiffy-Panda/AI-BT-Gym">Source on GitHub</a>.</span>
+  <span class="mono">GODOT 4.6.1 · C# · 4 TOURNAMENT SERIES · 5,968 MATCHES</span>
+</footer>

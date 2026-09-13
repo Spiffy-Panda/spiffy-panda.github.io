@@ -1,3 +1,179 @@
 @use "./base.scss";
 
-// put your custom CSS here!
+// yss-theme-bamboo has a raised-surface token that Quartz's palette has no slot
+// for. Cards need it or they read as an outline on the page ground rather than
+// as objects sitting on it.
+:root {
+  --bg-2: #f7fbf6;
+}
+:root[saved-theme="dark"] {
+  --bg-2: #1e231e;
+}
+
+// Masthead - the index page's own opening. Quartz's article title and read-time
+// line are suppressed on that page so this is the first thing under the nav.
+.masthead {
+  // Quartz styles bare <header> as a flex row, which is why this is a <section>
+  // and why the display is stated rather than assumed.
+  display: block;
+  margin: 0 0 2.5rem;
+
+  &__eyebrow {
+    font-family: var(--headerFont);
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--secondary);
+    margin: 0 0 0.4rem;
+  }
+
+  &__title {
+    font-family: var(--headerFont);
+    font-size: 2.4rem;
+    line-height: 1.1;
+    color: var(--dark);
+    margin: 0 0 0.9rem;
+  }
+
+  &__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.1rem;
+    margin: 1.1rem 0 0;
+    font-family: var(--headerFont);
+    font-size: 0.92rem;
+    font-weight: 600;
+  }
+
+  &__mission {
+    font-size: 1.05rem;
+    line-height: 1.55;
+    color: var(--darkgray);
+    max-width: 44rem;
+    margin: 0;
+    padding-left: 0.9rem;
+    border-left: 3px solid var(--secondary);
+  }
+}
+
+// Hero — the project card grid at the top of the index page.
+// Art comes from each project's own resume-assets/ folder, synced in by
+// tools/sync-resume-assets.ps1. Thumbnails are all 1280x720; the grid crops
+// nothing, so a card is always the whole card.
+.hero {
+  margin: 0 0 3rem;
+
+  &-lede {
+    font-size: 1.1rem;
+    line-height: 1.5;
+    color: var(--darkgray);
+    max-width: 46rem;
+    margin: 0 0 1.75rem;
+  }
+
+  &-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr));
+    gap: 1.25rem;
+  }
+}
+
+.hero-card {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--lightgray);
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--bg-2);
+  transition:
+    border-color 0.15s ease,
+    transform 0.15s ease;
+
+  position: relative;
+
+  // The title carries the href; this stretches its hit area over the whole card,
+  // which keeps block content out of the anchor and survives HTML parsing intact.
+  &__link {
+    background-image: none;
+    color: inherit;
+
+    &::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+    }
+  }
+
+  &:has(&__link:hover) {
+    border-color: var(--secondary);
+    transform: translateY(-2px);
+  }
+
+  &__art {
+    display: block;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    border-bottom: 1px solid var(--lightgray);
+  }
+
+  &__body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    padding: 0.9rem 1rem 1.1rem;
+    flex: 1;
+  }
+
+  // The project's own name, demoted to a byline under the claim it supports.
+  &__head {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    margin-top: auto;
+    padding-top: 0.75rem;
+  }
+
+  &__emblem {
+    width: 1.1rem;
+    height: 1.1rem;
+    flex: 0 0 auto;
+    opacity: 0.85;
+  }
+
+  // The claim the project demonstrates. This is what a reader scans, so it
+  // carries the link and sets the card's weight.
+  &__concept {
+    font-family: var(--headerFont);
+    font-weight: 700;
+    font-size: 1.02rem;
+    line-height: 1.3;
+    color: var(--dark);
+    margin: 0;
+  }
+
+  &__title {
+    font-size: 0.78rem;
+    letter-spacing: 0.02em;
+    color: var(--darkgray);
+    opacity: 0.8;
+  }
+
+  &__blurb {
+    font-size: 0.87rem;
+    line-height: 1.45;
+    color: var(--darkgray);
+    margin: 0;
+  }
+
+}
+
+// With the table of contents and graph gone the right rail holds nothing, but
+// Quartz still reserves its 320px. Collapse it so removing the components
+// actually gives the screen space back.
+.sidebar.right:not(:has(*)) {
+  // !important because Quartz sets this inside a min-width media query, which
+  // lands later in the cascade at equal specificity.
+  display: none !important;
+}

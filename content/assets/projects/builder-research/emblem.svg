@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-label="Builder-Research emblem: a five-attribute mindset profile">
+  <circle cx="32" cy="32" r="32" fill="#32006e"/>
+  <polygon points="32.0,11.0 52.9,26.2 44.9,50.8 19.1,50.8 11.1,26.2" fill="none" stroke="#ffffff" stroke-width="2" opacity="0.45" stroke-linejoin="round"/>
+  <g fill="none" stroke="#ffffff" stroke-width="1.6" opacity="0.3"><path d="M32 33 L32.0 11.0"/><path d="M32 33 L52.9 26.2"/><path d="M32 33 L44.9 50.8"/><path d="M32 33 L19.1 50.8"/><path d="M32 33 L11.1 26.2"/></g>
+  <polygon points="32.0,13.6 43.5,29.3 37.4,40.5 22.7,45.8 12.1,26.5" fill="#ffc700" fill-opacity="0.9" stroke="#ffc700" stroke-width="3" stroke-linejoin="round"/>
+</svg>

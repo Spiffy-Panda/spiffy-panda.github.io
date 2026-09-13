@@ -3,7 +3,7 @@ import * as Plugin from "./quartz/plugins"
 
 const config: QuartzConfig = {
   configuration: {
-    pageTitle: "Panda's Portfolio",
+    pageTitle: "Brian's Portfolio",
     pageTitleSuffix: "",
     enableSPA: true,
     enablePopovers: true,
@@ -20,28 +20,35 @@ const config: QuartzConfig = {
         body: "Source Sans Pro",
         code: "IBM Plex Mono",
       },
+      // yss-theme-bamboo, Panda's house palette: celadon paper by day, green paper
+      // by night. Values are lifted from bamboo.css unchanged wherever Quartz has a
+      // token for them, so the two stay comparable:
+      //   light = bg, lightgray = line, gray = muted, darkgray = fg-2, dark = fg,
+      //   secondary = accent.
+      // Quartz has no hover token, so `tertiary` is the one derived value here: the
+      // accent lightened enough to read as a state change. Every text pair clears AA.
       colors: {
         lightMode: {
-          light: "#faf8f8",
-          lightgray: "#e5e5e5",
-          gray: "#b8b8b8",
-          darkgray: "#4e4e4e",
-          dark: "#2b2b2b",
-          secondary: "#284b63",
-          tertiary: "#84a59d",
-          highlight: "rgba(143, 159, 169, 0.15)",
-          textHighlight: "#fff23688",
+          light: "#eaf0ea",
+          lightgray: "#c8d6c9",
+          gray: "#77857c",
+          darkgray: "#47554e",
+          dark: "#16201c",
+          secondary: "#1f6b52",
+          tertiary: "#2e8f6d",
+          highlight: "rgba(31, 107, 82, 0.12)",
+          textHighlight: "#d6a64866",
         },
         darkMode: {
-          light: "#161618",
-          lightgray: "#393639",
-          gray: "#646464",
-          darkgray: "#d4d4d4",
-          dark: "#ebebec",
-          secondary: "#7b97aa",
-          tertiary: "#84a59d",
-          highlight: "rgba(143, 159, 169, 0.15)",
-          textHighlight: "#b3aa0288",
+          light: "#151915",
+          lightgray: "#313a31",
+          gray: "#7b8175",
+          darkgray: "#b0b6aa",
+          dark: "#e8ebe2",
+          secondary: "#9ad07a",
+          tertiary: "#b8e29d",
+          highlight: "rgba(154, 208, 122, 0.15)",
+          textHighlight: "#d6a64855",
         },
       },
     },
